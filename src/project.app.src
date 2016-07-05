@@ -1,0 +1,9 @@
+{application, project, [
+  {vsn, "1.0.0"},
+  {modules, [
+    temperature_calculator, temperature_event, temperature_handler, temperature_network_monitor, temperature_sensor,
+    temperature_supervisor, project_supervisor
+  ]},
+  {registered, [project]},
+  {mod, {project, []}}
+]}.

@@ -1,0 +1,10 @@
+ebin/project.app
+ebin/project.beam
+ebin/project_network.beam
+ebin/project_supervisor.beam
+ebin/temperature_calculator.beam
+ebin/temperature_event.beam
+ebin/temperature_handler.beam
+ebin/temperature_network_monitor.beam
+ebin/temperature_sensor.beam
+ebin/temperature_supervisor.beam
