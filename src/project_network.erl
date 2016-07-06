@@ -4,35 +4,23 @@
 
 -record(state, {mqttc, seq}).
 
-start_link() ->
-  {ok, _Pid} = gen_server:start_link({local,network},?MODULE, [],[]).
+start_link(SenderName) ->
+  {ok, _Pid} = gen_server:start_link({global,SenderName},?MODULE, [],[]).
 
 terminate(Reason, _State) ->
   io:format("Il client MQTT con identificatore ~p e stato terminato per il motivo: ~p~n", [self(),Reason]),
   ok.
 
-init(_Args) ->
-  {ok, C} = emqttc:start_link([{host, "localhost"},
-    {client_id, <<"simpleClient">>},
-    {logger, info}]),
-  emqttc:subscribe(C, <<"TopicA">>, qos1),
-  self() ! publish,
-  {ok, #state{mqttc = C, seq = 1}}.
-
-%% Receive Publish Message from TopicA...
-handle_info({publish, Topic, Payload}, State) ->
-  io:format("Message from ~s: ~p~n", [Topic, Payload]),
-  {noreply, State};
+init(_) ->
+  {ok, Client} = emqttc:start_link([{host, "localhost"}, {client_id, <<"Client">>}, {logger, info}]),
+  {ok, #state{mqttc = Client, seq = 1}}.
 
 %% Client connected
-handle_info({mqttc, C, connected}, State = #state{mqttc = C}) ->
-  io:format("Client ~p is connected~n", [C]),
-  emqttc:subscribe(C, <<"TopicA">>, 1),
-  emqttc:subscribe(C, <<"TopicB">>, 2),
-  self() ! publish,
+handle_info({mqttc, Client, connected}, State = #state{mqttc = Client}) ->
+  io:format("Il client MQTT con identificatore ~p è connesso al broker~n", [Client]),
   {noreply, State};
 
 %% Client disconnected
-handle_info({mqttc, C, disconnected}, State = #state{mqttc = C}) ->
-  io:format("Client ~p is disconnected~n", [C]),
+handle_info({mqttc, Client, disconnected}, State = #state{mqttc = Client}) ->
+  io:format("Il client MQTT con identificatore ~p non è più connesso al broker~n", [Client]),
   {noreply, State}.
