@@ -13,13 +13,13 @@
 %% dei sensori, e per le medie calcolate dal processo apposito. Viene inoltre definita la dimensione massima della struttura
 %% dati contenente lo storico delle medie stesse. I riferimenti a tali strutture vengono poi salvati nello stato.
 
-init([]) ->
+init(ClientName) ->
   process_flag(trap_exit, true),
   io:format("Gestore di eventi di temperatura in esecuzione con identificatore: ~p~n", [self()]),
   Temperature = [],
   Sensors = [],
   Means = [],
-  Data = {{temperature, Temperature}, {sensors, Sensors}, {means, Means}, {bufferSize, 3}, {calculator, notset}},
+  Data = {{temperature, Temperature}, {sensors, Sensors}, {means, Means}, {bufferSize, 3000}, {calculator, notset}, {client,ClientName}},
   {ok, Data}.
 
 %% Operazioni di deinizializzazione da compiere in caso di terminazione. Per il momento, nessuna.
@@ -40,11 +40,11 @@ code_change(_OldVsn, State, _Extra) ->
 %% viene aggiornata e reinserita nello stato.
 
 handle_event({register, Value}, State) ->
-  {_Dataslot_1, Dataslot_2, _Dataslot_3, _Dataslot_4, _Dataslot_5} = State,
+  {_Dataslot_1, Dataslot_2, _Dataslot_3, _Dataslot_4, _Dataslot_5, _Dataslot_6} = State,
   {sensors, Sensors} = Dataslot_2,
   UpdatedSensors = lists:append(Sensors, [{erlang:localtime(), Value}]),
   io:format("Nuovo sensore registrato con identificatore: ~p~n", [Value]),
-  NewState = {_Dataslot_1, {sensors, UpdatedSensors}, _Dataslot_3, _Dataslot_4, _Dataslot_5},
+  NewState = {_Dataslot_1, {sensors, UpdatedSensors}, _Dataslot_3, _Dataslot_4, _Dataslot_5, _Dataslot_6},
   {ok, NewState};
 
 %% Gestione di un evento di registrazione del componente dedicato ai calcoli. Viene prevelata la tupla contenente l'identificatore
@@ -52,11 +52,11 @@ handle_event({register, Value}, State) ->
 %% nuovo identificatore giunto mediante notify. La tupla, infine, viene reinserita nello stato.
 
 handle_event({register_calculator, Value}, State) ->
-  {_Dataslot_1, _Dataslot_2, _Dataslot_3, _Dataslot_4, Dataslot_5} = State,
+  {_Dataslot_1, _Dataslot_2, _Dataslot_3, _Dataslot_4, Dataslot_5, _Dataslot_6} = State,
   {calculator, _} = Dataslot_5,
   UpdatedCalculator = {calculator, Value},
   io:format("Nuovo processo dedicato ai calcoli registrato con identificatore: ~p~n", [Value]),
-  NewState = {_Dataslot_1, _Dataslot_2, _Dataslot_3, _Dataslot_4, UpdatedCalculator},
+  NewState = {_Dataslot_1, _Dataslot_2, _Dataslot_3, _Dataslot_4, UpdatedCalculator, _Dataslot_6},
   {ok, NewState};
 
 %% Gestione di un evento di invio di un valore grezzo da parte di un sensore. Viene prevelata la struttura dati contenente i valori
@@ -64,12 +64,12 @@ handle_event({register_calculator, Value}, State) ->
 %% viene aggiornata e reinserita nello stato.
 
 handle_event({send, Value, _From}, State) ->
-  {Dataslot_1, _Dataslot_2, _Dataslot_3, _Dataslot_4, _Dataslot_5} = State,
+  {Dataslot_1, _Dataslot_2, _Dataslot_3, _Dataslot_4, _Dataslot_5, _Dataslot_6} = State,
   {temperature, Temperature} = Dataslot_1,
   UpdatedTemperature = lists:append(Temperature, [{erlang:localtime(), Value}]),
   %%io:format("Valore di temperatura ricevuto pari a: ~p gradi~n", [Value]),
   %%io:format("Il valore è stato inviato dal sensore con identificatore: ~p~n", [From]),
-  NewState = {{temperature, UpdatedTemperature}, _Dataslot_2, _Dataslot_3, _Dataslot_4, _Dataslot_5},
+  NewState = {{temperature, UpdatedTemperature}, _Dataslot_2, _Dataslot_3, _Dataslot_4, _Dataslot_5, _Dataslot_6},
   {ok, NewState};
 
 %% Gestione di un evento di calcolo della media notificato dal processo atto ai calcoli. Viene prevelata la struttura dati
@@ -78,19 +78,19 @@ handle_event({send, Value, _From}, State) ->
 %% la struttura dati viene resettata, altrimenti viene aggiornata inserendo il nuovo valore di media calcolato.
 
 handle_event({mean, Value}, State) ->
-  {Dataslot_1, Dataslot_2, Dataslot_3, Dataslot_4, Dataslot_5} = State,
+  {Dataslot_1, Dataslot_2, Dataslot_3, Dataslot_4, Dataslot_5, _Dataslot_6} = State,
   {means, Means} = Dataslot_3,
   {bufferSize, BufferSize} = Dataslot_4,
   case length(Means) of
     N when N > BufferSize ->
       UpdatedMeans = [],
       io:format("Il buffer per le medie è stato resettato~n"),
-      NewState = {Dataslot_1, Dataslot_2, {means, UpdatedMeans}, Dataslot_4, Dataslot_5},
+      NewState = {Dataslot_1, Dataslot_2, {means, UpdatedMeans}, Dataslot_4, Dataslot_5, _Dataslot_6},
       {ok, NewState};
     _ ->
       UpdatedMeans = lists:append(Means, [{erlang:localtime(), Value}]),
       %%io:format("Il valore medio ricevuto pari a: ~p gradi~n", [Value]),
-      NewState = {Dataslot_1, Dataslot_2, {means, UpdatedMeans}, Dataslot_4, Dataslot_5},
+      NewState = {Dataslot_1, Dataslot_2, {means, UpdatedMeans}, Dataslot_4, Dataslot_5, _Dataslot_6},
       {ok, NewState}
   end;
 
@@ -99,19 +99,19 @@ handle_event({mean, Value}, State) ->
 %% per il buffer e restituire il nuovo stato così ottenuto.
 
 handle_event({update_buffer_size, Value}, State) ->
-  {_Dataslot_1, _Dataslot_2, _Dataslot_3, _Dataslot_4, _Dataslot_5} = State,
+  {_Dataslot_1, _Dataslot_2, _Dataslot_3, _Dataslot_4, _Dataslot_5, _Dataslot_6} = State,
   UpdatedBufferSize = {bufferSize, Value},
-  NewState = {_Dataslot_1, _Dataslot_2, _Dataslot_3, UpdatedBufferSize, _Dataslot_5},
+  NewState = {_Dataslot_1, _Dataslot_2, _Dataslot_3, UpdatedBufferSize, _Dataslot_5, _Dataslot_6},
   {ok, NewState};
 
 handle_event({update_interval_between_means, Value}, State) ->
-  {_Dataslot_1, _Dataslot_2, _Dataslot_3, _Dataslot_4, Dataslot_5} = State,
+  {_Dataslot_1, _Dataslot_2, _Dataslot_3, _Dataslot_4, Dataslot_5, _Dataslot_6} = State,
   {calculator, Calculator} = Dataslot_5,
   gen_server:cast(Calculator, {update_interval_between_means, Value}),
   {ok, State};
 
 handle_event({update_interval_between_values, Value}, State) ->
-  {_Dataslot_1, Dataslot_2, _Dataslot_3, _Dataslot_4, _Dataslot_5} = State,
+  {_Dataslot_1, Dataslot_2, _Dataslot_3, _Dataslot_4, _Dataslot_5, _Dataslot_6} = State,
   {sensors, Sensors} = Dataslot_2,
   visit_sensor_list(Sensors, Value),
   {ok, State};
@@ -121,9 +121,9 @@ handle_event({update_interval_between_values, Value}, State) ->
 %% prelevare l'apposita struttura dati dallo stato del processo per poi resettarla, salvandola nuovamente nello stato stesso.
 
 handle_event(erase_old_values, State) ->
-  {_Dataslot_1, Dataslot_2, Dataslot_3, _Dataslot_4, _Dataslot_5} = State,
+  {_Dataslot_1, Dataslot_2, Dataslot_3, _Dataslot_4, _Dataslot_5, _Dataslot_6} = State,
   NewTemperature = [],
-  NewState = {{temperature, NewTemperature}, Dataslot_2, Dataslot_3, _Dataslot_4, _Dataslot_5},
+  NewState = {{temperature, NewTemperature}, Dataslot_2, Dataslot_3, _Dataslot_4, _Dataslot_5, _Dataslot_6},
   {ok, NewState}.
 
 %% Funzione di supporto per l'esplorazione della lista contente tutti i sensori registrati presso l'event handler. Per ogni
@@ -141,15 +141,15 @@ visit_sensor_list([S | C], Value) ->
 %% (valori instantanei, identificatori, medie)
 
 handle_call(ask_for_values, State) ->
-  {{temperature, Temperature}, _Dataslot_2, _Dataslot_3, _Dataslot_4, _Dataslot_5} = State,
+  {{temperature, Temperature}, _Dataslot_2, _Dataslot_3, _Dataslot_4, _Dataslot_5, _Dataslot_6} = State,
   {ok, Temperature, State};
 
 handle_call(ask_for_subscribers, State) ->
-  {_Dataslot_1, {sensors, Sensors}, _Dataslot_3, _Dataslot_4, _Dataslot_5} = State,
+  {_Dataslot_1, {sensors, Sensors}, _Dataslot_3, _Dataslot_4, _Dataslot_5, _Dataslot_6} = State,
   {ok, Sensors, State};
 
 handle_call(ask_for_means, State) ->
-  {_Dataslot_1, _Dataslot_2, {means, Means}, _Dataslot_4, _Dataslot_5} = State,
+  {_Dataslot_1, _Dataslot_2, {means, Means}, _Dataslot_4, _Dataslot_5, _Dataslot_6} = State,
   {ok, Means, State}.
 
 % --- GESTIONE DEI MESSAGGI RIMANENTI --- %

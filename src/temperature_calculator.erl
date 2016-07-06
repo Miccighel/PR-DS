@@ -22,7 +22,7 @@ init(EventManager) ->
   io:format("Processo dedicato ai calcoli in esecuzione con identificatore: ~p~n", [self()]),
   subscribe(EventManager),
   Data = {intervalBetweenMeans,12000},
-  Timer = erlang:send_after(1, self(), mean),
+  Timer = erlang:send_after(12000, self(), mean),
   State = {Timer,Data,EventManager},
   {ok, State}.
 

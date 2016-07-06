@@ -9,8 +9,8 @@
 
 %% Lancia il supervisore e lega l'implementazione concreta dell'event handler al processo gen_event.
 
-start_link(Name) ->
-  {ok, Pid} = supervisor:start_link({local,Name},?MODULE, []),
+start_link(Name,ClientName) ->
+  {ok, Pid} = supervisor:start_link({local,Name},?MODULE, ClientName),
   io:format("Il supervisore del modulo dedicato alla temperature è stato avviato con identificatore: ~p~n", [Pid]),
   %% Necessario restituire tale tupla per l'application controller che ha il compito di avviare l'applicazione, altrimenti
   %% restituire un errore bad_return_value.
@@ -20,7 +20,7 @@ start_link(Name) ->
 %% componenti del sistema; vengono quindi indicati i figli sotto il controllo del supervisore da lanciare andando a definire
 %% le loro specifiche ed infine viene impostata la strategia globale di supervisione.
 
-init([]) ->
+init(ClientName) ->
   process_flag(trap_exit, true),
   EventHandlerName = event_handler,
   Sensor1Name = sensor_1,
@@ -30,7 +30,7 @@ init([]) ->
   %% Una singola ChildSpecification è nella forma: {ChildId, StartFunc, Restart, Shutdown, Type, Modules}.
   ChildSpecification =
     [
-      {EventHandlerName, {temperature_event, start_link, [EventHandlerName]}, permanent, 5000, worker, [dynamic]},
+      {EventHandlerName, {temperature_event, start_link, [EventHandlerName,ClientName]}, permanent, 5000, worker, [dynamic]},
       {Sensor1Name, {temperature_sensor, start_link, [EventHandlerName,Sensor1Name]}, permanent, 5000, worker, [temperature_sensor]},
       {Sensor2Name, {temperature_sensor, start_link, [EventHandlerName,Sensor2Name]}, permanent, 5000, worker, [temperature_sensor]},
       {CalculatorName, {temperature_calculator, start_link, [EventHandlerName,CalculatorName]}, permanent, 5000, worker, [temperature_calculator]},
