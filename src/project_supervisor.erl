@@ -19,12 +19,12 @@ start() ->
 init([]) ->
   process_flag(trap_exit, true),
   TemperatureSupervisorName = temperature_supervisor,
-  SenderName = client1,
+  ProcessName = client1,
   %% Una singola ChildSpecification è nella forma: {ChildId, StartFunc, Restart, Shutdown, Type, Modules}.
   ChildSpecification =
     [
-      {TemperatureSupervisorName, {temperature_supervisor, start_link, [TemperatureSupervisorName,SenderName]}, permanent, 5000, supervisor, [temperature_supervisor]},
-      {SenderName, {project_network, start_link, [SenderName]}, permanent, 5000, worker, [project_network]}
+      {TemperatureSupervisorName, {temperature_supervisor, start_link, [TemperatureSupervisorName,ProcessName]}, permanent, 5000, supervisor, [temperature_supervisor]},
+      {ProcessName, {project_network, start_link, [ProcessName]}, permanent, 5000, worker, [project_network]}
     ],
   Strategy = {{rest_for_one, 10, 6000}, ChildSpecification},
   {ok, Strategy}.

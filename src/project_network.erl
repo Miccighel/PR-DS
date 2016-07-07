@@ -5,7 +5,7 @@
 -record(state, {mqttc, seq}).
 
 start_link(Name) ->
-  {ok, _Pid} = gen_server:start_link({global,Name},?MODULE, [],[]).
+  {ok, _Pid} = gen_server:start_link({global,Name},?MODULE,[],[]).
 
 terminate(Reason, _State) ->
   io:format("Il client MQTT con identificatore ~p e stato terminato per il motivo: ~p~n", [self(),Reason]),
@@ -16,10 +16,13 @@ terminate(Reason, _State) ->
 code_change(_OldVsn, State, _Extra) ->
   {ok, State}.
 
-init(_) ->
+init([]) ->
   Interval = 11000,
-  {ok, Client} = emqttc:start_link([{host, "localhost"}, {client_id, <<"Client">>}, {logger, info}]),
+  ClientName = io_lib:format("~p",[self()]),
+  Result = "Client_" ++ lists:flatten(ClientName),
+  {ok, Client} = emqttc:start_link([{host, "localhost"}, {client_id, Result}, {logger, info}]),
   emqttc:subscribe(Client, <<"temperature">>),
+  io:format("Il client con nome ~p e identificatore ~p ha eseguito l'operazione di subscribe per il topic temperature~n", [Result,self()]),
   Timer = erlang:send_after(Interval, self(), ask_for_means),
   State = {#state{mqttc = Client, seq = 1}, Timer, Interval, means},
   {ok, State}.
