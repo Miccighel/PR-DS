@@ -21,7 +21,7 @@ init(EventManager) ->
   process_flag(trap_exit, true),
   io:format("Sensore per l'invio della temperatura in esecuzione con identificatore: ~p~n", [self()]),
   subscribe(EventManager),
-  Data = {intervalBetweenValues,4000},
+  Data = {intervalBetweenValues,5000},
   Timer = erlang:send_after(1, self(), {send,EventManager}),
   State = {Timer,Data},
   {ok, State}.

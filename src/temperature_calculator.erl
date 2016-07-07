@@ -21,8 +21,8 @@ init(EventManager) ->
   process_flag(trap_exit, true),
   io:format("Processo dedicato ai calcoli in esecuzione con identificatore: ~p~n", [self()]),
   subscribe(EventManager),
-  Data = {intervalBetweenMeans,12000},
-  Timer = erlang:send_after(12000, self(), mean),
+  Data = {intervalBetweenMeans,10000},
+  Timer = erlang:send_after(10000, self(), mean),
   State = {Timer,Data,EventManager},
   {ok, State}.
 
