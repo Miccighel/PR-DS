@@ -43,7 +43,7 @@ handle_event({register, Value}, State) ->
   {_Dataslot_1, Dataslot_2, _Dataslot_3, _Dataslot_4, _Dataslot_5, _Dataslot_6} = State,
   {sensors, Sensors} = Dataslot_2,
   UpdatedSensors = lists:append(Sensors, [{erlang:localtime(), Value}]),
-  io:format("Nuovo sensore registrato con identificatore: ~p~n", [Value]),
+  io:format("Nuovo sensore registrato presso l'event handler con identificatore: ~p~n", [Value]),
   NewState = {_Dataslot_1, {sensors, UpdatedSensors}, _Dataslot_3, _Dataslot_4, _Dataslot_5, _Dataslot_6},
   {ok, NewState};
 
@@ -55,7 +55,7 @@ handle_event({register_calculator, Value}, State) ->
   {_Dataslot_1, _Dataslot_2, _Dataslot_3, _Dataslot_4, Dataslot_5, _Dataslot_6} = State,
   {calculator, _} = Dataslot_5,
   UpdatedCalculator = {calculator, Value},
-  io:format("Nuovo processo dedicato ai calcoli registrato con identificatore: ~p~n", [Value]),
+  io:format("Nuovo processo dedicato ai calcoli registrato presso l'event handler con identificatore: ~p~n", [Value]),
   NewState = {_Dataslot_1, _Dataslot_2, _Dataslot_3, _Dataslot_4, UpdatedCalculator, _Dataslot_6},
   {ok, NewState};
 

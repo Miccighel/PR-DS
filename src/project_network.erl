@@ -4,8 +4,11 @@
 
 -record(state, {mqttc, seq}).
 
-start_link(Name) ->
-  {ok, _Pid} = gen_server:start_link({global,Name},?MODULE,[],[]).
+start_link(Name, sender) ->
+  {ok, _Pid} = gen_server:start_link({global,Name},?MODULE,sender,[]);
+
+start_link(Name, receiver) ->
+  {ok, _Pid} = gen_server:start_link({global,Name},?MODULE,receiver,[]).
 
 terminate(Reason, _State) ->
   io:format("Il client MQTT con identificatore ~p e stato terminato per il motivo: ~p~n", [self(),Reason]),
@@ -16,16 +19,27 @@ terminate(Reason, _State) ->
 code_change(_OldVsn, State, _Extra) ->
   {ok, State}.
 
-init([]) ->
+init(sender) ->
   Interval = 11000,
   ClientName = io_lib:format("~p",[self()]),
   Result = "Client_" ++ lists:flatten(ClientName),
-  {ok, Client} = emqttc:start_link([{host, "localhost"}, {client_id, Result}, {logger, info}]),
-  emqttc:subscribe(Client, <<"temperature">>),
-  io:format("Il client con nome ~p e identificatore ~p ha eseguito l'operazione di subscribe per il topic temperature~n", [Result,self()]),
+  {ok, Client} = emqttc:start_link([{host, host()}, {client_id, Result}, {logger, info}]),
+  io:format("Il client con nome ~p e identificatore ~p ha è stato lanciato come PUBLISHER per il topic temperature~n", [Result,self()]),
   Timer = erlang:send_after(Interval, self(), ask_for_means),
   State = {#state{mqttc = Client, seq = 1}, Timer, Interval, means},
+  {ok, State};
+
+init(receiver) ->
+  ClientName = io_lib:format("~p",[self()]),
+  Result = "Client_" ++ lists:flatten(ClientName),
+  {ok, Client} = emqttc:start_link([{host, host()}, {client_id, Result}, {logger, info}]),
+  emqttc:subscribe(Client, <<"temperature">>),
+  io:format("Il client con nome ~p e identificatore ~p ha è stato lanciato come SUBSCRIBER per il topic temperature~n", [Result,self()]),
+  State = {#state{mqttc = Client, seq = 1}},
   {ok, State}.
+
+host()->
+  "localhost".
 
 % --- GESTIONE DELLE CHIAMATE SINCRONE --- %
 
@@ -59,7 +73,10 @@ handle_info(ask_for_means, State) ->
   {Info,OldTimer,Interval, _Means} = State,
   erlang:cancel_timer(OldTimer),
   NewMeans = gen_event:call(event_handler, temperature_handler, ask_for_means),
-  io:format("Medie ricevute dall'event handler~n"),
+  %%io:format("Medie ricevute dall'event handler~n"),
+
+  %% FARE GESTIONE DELLE MEDIE
+
   emqttc:publish(Info#state.mqttc, <<"temperature">>, <<"POKEMON GO">>),
   Timer = erlang:send_after(Interval, self(), ask_for_means),
   NewState = {Info,Timer,Interval, NewMeans},
