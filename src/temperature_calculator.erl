@@ -18,11 +18,12 @@ start_link(EventManager,Name) ->
 %% le richieste di calcolo della media all'event handler) ed il timer per regolare tale invio di tali richieste.
 
 init(EventManager) ->
+  Interval = 4000,
   process_flag(trap_exit, true),
   io:format("Processo dedicato ai calcoli in esecuzione con identificatore: ~p~n", [self()]),
   subscribe(EventManager),
-  Data = {intervalBetweenMeans,10000},
-  Timer = erlang:send_after(10000, self(), mean),
+  Data = {intervalBetweenMeans,Interval},
+  Timer = erlang:send_after(Interval, self(), mean),
   State = {Timer,Data,EventManager},
   {ok, State}.
 

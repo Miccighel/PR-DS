@@ -62,3 +62,7 @@ ebin/emqttc_protocol.beam
 ebin/emqttc_reconnector.beam
 ebin/emqttc_serialiser.beam
 ebin/lager_util.beam
+ebin/window_event.beam
+ebin/window_handler.beam
+ebin/window_sensor.beam
+ebin/window_supervisor.beam

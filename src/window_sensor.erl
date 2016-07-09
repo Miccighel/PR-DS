@@ -2,7 +2,7 @@
 
 %% Questo modulo permette di modellare un singolo sensore in grado di rilevare la temperatura in una stanza.
 
--module(temperature_sensor).
+-module(window_sensor).
 -compile(export_all).
 -behaviour(gen_server).
 
@@ -20,9 +20,9 @@ start_link(EventManager,Name) ->
 init(EventManager) ->
   Interval = 3000,
   process_flag(trap_exit, true),
-  io:format("Sensore per l'invio della temperatura in esecuzione con identificatore: ~p~n", [self()]),
+  io:format("Sensore per la verifica dello stato della finestre in esecuzione con identificatore: ~p~n", [self()]),
   subscribe(EventManager),
-  Data = {intervalBetweenValues,Interval},
+  Data = {intervalBetweenStatus,Interval},
   Timer = erlang:send_after(1, self(), {send,EventManager}),
   State = {Timer,Data},
   {ok, State}.
@@ -30,7 +30,7 @@ init(EventManager) ->
 %% Operazioni di deinizializzazione da compiere in caso di terminazione. Per il momento, nessuna.
 
 terminate(Reason, _State) ->
-  io:format("Il sensore per l'invio della temperature con identificatore ~p e stato terminato per il motivo: ~p~n", [self(),Reason]),
+  io:format("Il sensore per la verifica dello stato della finestre ~p e stato terminato per il motivo: ~p~n", [self(),Reason]),
   ok.
 
 %% Gestione della modifica a runtime del codice.
@@ -49,11 +49,11 @@ subscribe(EventManager)->
 
 %% Invia all'event handler il valore rilevato dal sensore (per il momento è un semplice numero casuale)
 
-send_value(EventManager)->
+send_status(EventManager)->
   %% L'istruzione seguente permette di ottenere un seed univoco per generare il numero casuale.
   random:seed(erlang:phash2([node()]), erlang:monotonic_time(), erlang:unique_integer()),
-  Degree = random:uniform(40),
-  gen_event:notify(EventManager, {send, Degree, self()}),
+  Status = (random:uniform(2))-1,
+  gen_event:notify(EventManager, {send, Status, self()}),
   ok.
 
 % --- GESTIONE DELLE CHIAMATE SINCRONE --- %
@@ -66,15 +66,11 @@ handle_call(_Request, _From, _State) ->
 
 % --- GESTIONE DELLE CHIAMATE ASINCRONE --- %
 
-%% Il sensore può ricevere una chiamara asincrona dall'event handler per aggiornare l'intervallo di invio dei valori
-%% istantanei di temperatura rilevati. Per fare ciò, viene recuperata ed aggiornata l'apposita componente dello stato
-%% del processo. Lo stato risultante viene, infine, restituito.
+%% Intercetta qualsiasi richiesta sincrona bloccando la chiamata. Se viene eseguita una chiamata sincrona
+%% al componente, infatti, ci si trova in una situazione d'errore.
 
-handle_cast({update_interval_between_values,Value}, State) ->
-  {Timer,_} = State,
-  UpdatedData = {intervalBetweenValues,Value},
-  NewState = {Timer, UpdatedData},
-  {noreply, NewState}.
+handle_cast(_Request, _State) ->
+  {stop, normal, "Chiamate asincrone non permesse", _State}.
 
 % --- GESTIONE DEI MESSAGGI RIMANENTI --- %
 
@@ -86,9 +82,9 @@ handle_cast({update_interval_between_values,Value}, State) ->
 
 handle_info({send,EventManager}, State) ->
   {OldTimer,Data} = State,
-  {intervalBetweenValues,Interval} = Data,
+  {intervalBetweenStatus,Interval} = Data,
   erlang:cancel_timer(OldTimer),
-  send_value(EventManager),
+  send_status(EventManager),
   Timer = erlang:send_after(Interval, self(), {send,EventManager}),
   NewState = {Timer,Data},
   {noreply, NewState}.

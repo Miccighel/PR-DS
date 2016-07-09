@@ -21,11 +21,13 @@ start() ->
 
 init(sender) ->
   process_flag(trap_exit, true),
+  WindowSupervisorName = window_supervisor,
   TemperatureSupervisorName = temperature_supervisor,
   ProcessName = client1,
   %% Una singola ChildSpecification è nella forma: {ChildId, StartFunc, Restart, Shutdown, Type, Modules}.
   ChildSpecification =
     [
+      {WindowSupervisorName, {window_supervisor, start_link, [WindowSupervisorName,ProcessName]}, permanent, 5000, supervisor, [window_supervisor]},
       {TemperatureSupervisorName, {temperature_supervisor, start_link, [TemperatureSupervisorName,ProcessName]}, permanent, 5000, supervisor, [temperature_supervisor]},
       {ProcessName, {project_network, start_link, [ProcessName,sender]}, permanent, 5000, worker, [project_network]}
     ],

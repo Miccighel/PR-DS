@@ -63,7 +63,7 @@ handle_call(_Request, _From, _State) ->
 
 % --- GESTIONE DELLE CHIAMATE ASINCRONE --- %
 
-%% Intercetta qualsiasi richiesta asincrona bloccando la chiamata. Se viene eseguita una chiamata sincrona
+%% Intercetta qualsiasi richiesta asincrona bloccando la chiamata. Se viene eseguita una chiamata asincrona
 %% al componente, infatti, ci si trova in una situazione d'errore.
 
 handle_cast(_Request, _State) ->

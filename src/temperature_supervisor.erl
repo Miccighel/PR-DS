@@ -22,11 +22,11 @@ start_link(Name,ClientName) ->
 
 init(ClientName) ->
   process_flag(trap_exit, true),
-  EventHandlerName = event_handler,
-  Sensor1Name = sensor_1,
-  Sensor2Name = sensor_2,
-  CalculatorName = calculator,
-  MonitorName = network_monitor,
+  EventHandlerName = temperature_event_handler,
+  Sensor1Name = temperature_sensor_1,
+  Sensor2Name = temperature_sensor_2,
+  CalculatorName = temperature_calculator,
+  MonitorName = temperature_network_monitor,
   %% Una singola ChildSpecification è nella forma: {ChildId, StartFunc, Restart, Shutdown, Type, Modules}.
   ChildSpecification =
     [
@@ -38,7 +38,7 @@ init(ClientName) ->
 
     ],
   %% Utilizzare una strategia rest_for_one significa che se una componente del sistema termina per qualsiasi motivo, vengono riavviate
-  %% LA COMPONENTE STESSA E TUTTE QUELLE AVVIATE DOPO DI ESSA. Se, ad esempio, il processo sensor_2 muore, vengono fatti ripartire:
+  %% LA COMPONENTE STESSA E TUTTE QUELLE AVVIATE DOPO DI ESSA. Se, ad esempio, il processo temperature_sensor_2 muore, vengono fatti ripartire:
   %% sensor_2, calculator e network_monitor, nell'ordine dato.
   Strategy = {{rest_for_one, 10, 6000}, ChildSpecification},
   {ok, Strategy}.
