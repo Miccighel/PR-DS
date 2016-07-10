@@ -1,4 +1,4 @@
-%% ---- MODULO TEMPERATURE_SUPERVISOR --- %%
+%% ---- MODULO TEMPERATURE_SUPERVISOR ---- %%
 
 %% Questo modulo rappresenta il supervisore del modulo dedicato alla temperatura e permette di eseguire l'impostazione
 %% iniziale delle varie componenti del modulo stesso.
@@ -7,11 +7,13 @@
 -behaviour(supervisor).
 -compile(export_all).
 
+%% ---- FUNZIONI STANDARD DI SUPERVISOR ---- %%
+
 %% Lancia il supervisore e lega l'implementazione concreta dell'event handler al processo gen_event.
 
 start_link(Name,ClientName) ->
   {ok, Pid} = supervisor:start_link({local,Name},?MODULE, ClientName),
-  io:format("Il supervisore del modulo dedicato alla temperature è stato avviato con identificatore: ~p~n", [Pid]),
+  io:format("SUPERVISORE TEMPERATURA: Il supervisore è stato avviato con identificatore: ~p~n", [Pid]),
   %% Necessario restituire tale tupla per l'application controller che ha il compito di avviare l'applicazione, altrimenti
   %% restituire un errore bad_return_value.
   {ok, Pid}.
@@ -25,6 +27,7 @@ init(ClientName) ->
   EventHandlerName = temperature_event_handler,
   Sensor1Name = temperature_sensor_1,
   Sensor2Name = temperature_sensor_2,
+  Sensor3Name = temperature_sensor_3,
   CalculatorName = temperature_calculator,
   MonitorName = temperature_network_monitor,
   %% Una singola ChildSpecification è nella forma: {ChildId, StartFunc, Restart, Shutdown, Type, Modules}.
@@ -33,6 +36,7 @@ init(ClientName) ->
       {EventHandlerName, {temperature_event, start_link, [EventHandlerName,ClientName]}, permanent, 5000, worker, [dynamic]},
       {Sensor1Name, {temperature_sensor, start_link, [EventHandlerName,Sensor1Name]}, permanent, 5000, worker, [temperature_sensor]},
       {Sensor2Name, {temperature_sensor, start_link, [EventHandlerName,Sensor2Name]}, permanent, 5000, worker, [temperature_sensor]},
+      {Sensor3Name, {temperature_sensor, start_link, [EventHandlerName,Sensor3Name]}, permanent, 5000, worker, [temperature_sensor]},
       {CalculatorName, {temperature_calculator, start_link, [EventHandlerName,CalculatorName]}, permanent, 5000, worker, [temperature_calculator]},
       {MonitorName, {temperature_network_monitor, start_link, [EventHandlerName,MonitorName]}, permanent, 5000, worker, [temperature_network_monitor]}
 
@@ -46,5 +50,5 @@ init(ClientName) ->
 %% Operazioni di deinizializzazione da compiere in caso di terminazione. Per il momento, nessuna.
 
 terminate(Reason, _State) ->
-  io:format("Il supervisore generale della temperatura con identificatore ~p e stato terminato per il motivo: ~p~n", [self(),Reason]),
+  io:format("SUPERVISORE TEMPERATURA: Il supervisore generale con identificatore ~p e stato terminato per il motivo: ~p~n", [self(),Reason]),
   ok.

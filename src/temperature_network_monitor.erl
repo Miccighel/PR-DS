@@ -1,7 +1,8 @@
-%% ---- MODULO TEMPERATURE_NETWORK_MONITOR --- %%
+%% ---- MODULO TEMPERATURE_NETWORK_MONITOR ---- %%
 
 %% Questo modulo fornisce un'interfaccia per definire un contratto di QoS verso i sensori, il modulo deputato ai calcoli
-%% e verso l'event handler, al fine di regolare il traffico presente sulla rete.
+%% e verso l'event handler, al fine di regolare il traffico presente sulla rete, generato per la maggior parte dal modulo
+%% della temperatura.
 
 -module(temperature_network_monitor).
 -behaviour(gen_server).
@@ -19,14 +20,14 @@ start_link(EventManager,Name) ->
 init(EventManager) ->
   process_flag(trap_exit, true),
   EventManager,
-  io:format("Monitor di rete in esecuzione con identificatore: ~p~n", [self()]),
+  io:format("MONITOR TEMPERATURA: Monitor del traffico di rete generato dal modulo in esecuzione con identificatore: ~p~n", [self()]),
   State = EventManager,
   {ok, State}.
 
 %% Operazioni di deinizializzazione da compiere in caso di terminazione. Per il momento, nessuna.
 
 terminate(Reason, _State) ->
-  io:format("Il monitor di rete con identificatore ~p e stato terminato per il motivo: ~p~n", [self(),Reason]),
+  io:format("MONITOR TEMPERATURA: Il monitor del traffico di rete generato dal modulo con identificatore ~p e stato terminato per il motivo: ~p~n", [self(),Reason]),
   ok.
 
 %% Gestione della modifica a runtime del codice.
@@ -34,7 +35,7 @@ terminate(Reason, _State) ->
 code_change(_OldVsn, State, _Extra) ->
   {ok, State}.
 
-% --- MESSAGGISTICA --- %
+% --- FUNZIONI DI SUPPORTO ED EVENTUALE MESSAGGISTICA --- %
 
 %% Le seguenti funzioni sono il cuore del monitor di rete e consentono di inviare all'event handler richieste per aggiornare
 %% la dimensione del buffer per l'immagazzinamento dei valori medi calcolati e gli intervalli con cui i sensori devono inviare
@@ -59,7 +60,7 @@ update_interval_between_means(EventManager, Value)->
 %% al componente, infatti, ci si trova in una situazione d'errore.
 
 handle_call(_Request, _From, _State) ->
-  {stop, normal, "Chiamate sincrone non permesse", _State}.
+  {stop, normal, "MONITOR TEMPERATURA: Chiamate sincrone non permesse", _State}.
 
 % --- GESTIONE DELLE CHIAMATE ASINCRONE --- %
 
@@ -67,13 +68,13 @@ handle_call(_Request, _From, _State) ->
 %% al componente, infatti, ci si trova in una situazione d'errore.
 
 handle_cast(_Request, _State) ->
-  {stop, normal, "Chiamate asincrone non permesse", _State}.
+  {stop, normal, "MONITOR TEMPERATURA: Chiamate asincrone non permesse", _State}.
 
-% --- GESTIONE DEI MESSAGGI RIMANENTI --- %
+% --- GESTIONE DEI MESSAGGI --- %
 
 %% Non viene effettuata alcuna particolare gestione di eventuali messaggi non trattati con le funzioni precedenti.
 
 handle_info(Message, State) ->
-  io:format("Messaggio ricevuto: ~p~n", [Message]),
+  io:format("MONITOR TEMPERATURA: Messaggio ricevuto: ~p~n", [Message]),
   {noreply, State}.
 

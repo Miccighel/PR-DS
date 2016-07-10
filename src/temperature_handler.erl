@@ -1,4 +1,4 @@
-%% ---- MODULO TEMPERATURE_HANDLER --- %%
+%% ---- MODULO TEMPERATURE_HANDLER ---- %%
 
 %% Questo modulo è l'implementazione concreta di uno degli handler associabili ad un event handler OTP, che ha, come scopo,
 %% la gestione di tutti gli eventi legati ai sensori per la misurazione della temperatura.
@@ -15,7 +15,7 @@
 
 init(ClientName) ->
   process_flag(trap_exit, true),
-  io:format("Gestore di eventi di temperatura in esecuzione con identificatore: ~p~n", [self()]),
+  io:format("GESTORE TEMPERATURA: Gestore di eventi in esecuzione con identificatore: ~p~n", [self()]),
   Temperature = [],
   Sensors = [],
   Means = [],
@@ -25,7 +25,7 @@ init(ClientName) ->
 %% Operazioni di deinizializzazione da compiere in caso di terminazione. Per il momento, nessuna.
 
 terminate(Reason, _State) ->
-  io:format("Il gestore di eventi di temperatura con identificatore ~p e stato terminato per il motivo: ~p~n", [self(), Reason]),
+  io:format("GESTORE TEMPERATURA: Il gestore di eventi con identificatore ~p e stato terminato per il motivo: ~p~n", [self(), Reason]),
   ok.
 
 %% Gestione della modifica a runtime del codice.
@@ -43,7 +43,7 @@ handle_event({register, Value}, State) ->
   {_Dataslot_1, Dataslot_2, _Dataslot_3, _Dataslot_4, _Dataslot_5, _Dataslot_6} = State,
   {sensors, Sensors} = Dataslot_2,
   UpdatedSensors = lists:append(Sensors, [{erlang:localtime(), Value}]),
-  io:format("Nuovo sensore registrato presso l'event handler con identificatore: ~p~n", [Value]),
+  io:format("GESTORE TEMPERATURA: Nuovo sensore registrato presso l'event handler con identificatore: ~p~n", [Value]),
   NewState = {_Dataslot_1, {sensors, UpdatedSensors}, _Dataslot_3, _Dataslot_4, _Dataslot_5, _Dataslot_6},
   {ok, NewState};
 
@@ -55,7 +55,7 @@ handle_event({register_calculator, Value}, State) ->
   {_Dataslot_1, _Dataslot_2, _Dataslot_3, _Dataslot_4, Dataslot_5, _Dataslot_6} = State,
   {calculator, _} = Dataslot_5,
   UpdatedCalculator = {calculator, Value},
-  io:format("Nuovo processo dedicato ai calcoli registrato presso l'event handler con identificatore: ~p~n", [Value]),
+  io:format("GESTORE TEMPERATURA: Nuovo processo dedicato ai calcoli registrato presso l'event handler con identificatore: ~p~n", [Value]),
   NewState = {_Dataslot_1, _Dataslot_2, _Dataslot_3, _Dataslot_4, UpdatedCalculator, _Dataslot_6},
   {ok, NewState};
 
@@ -63,12 +63,12 @@ handle_event({register_calculator, Value}, State) ->
 %% istantanei di temperatura ed essa viene aggiornata inserendo il nuovo valore giunto mediante notify. La struttura dati, infine,
 %% viene aggiornata e reinserita nello stato.
 
-handle_event({send, Value, _From}, State) ->
+handle_event({send, Value, From}, State) ->
   {Dataslot_1, _Dataslot_2, _Dataslot_3, _Dataslot_4, _Dataslot_5, _Dataslot_6} = State,
   {temperature, Temperature} = Dataslot_1,
   UpdatedTemperature = lists:append(Temperature, [{erlang:localtime(), Value}]),
-  %%io:format("Valore di temperatura ricevuto pari a: ~p gradi~n", [Value]),
-  %%io:format("Il valore è stato inviato dal sensore con identificatore: ~p~n", [From]),
+  io:format("GESTORE TEMPERATURA: Valore ricevuto pari a: ~p gradi~n", [Value]),
+  io:format("GESTORE TEMPERATURA: Il valore è stato inviato dal sensore con identificatore: ~p~n", [From]),
   NewState = {{temperature, UpdatedTemperature}, _Dataslot_2, _Dataslot_3, _Dataslot_4, _Dataslot_5, _Dataslot_6},
   {ok, NewState};
 
@@ -84,12 +84,12 @@ handle_event({mean, Value}, State) ->
   case length(Means) of
     N when N > BufferSize ->
       UpdatedMeans = [],
-      io:format("Il buffer per le medie è stato resettato~n"),
+      io:format("GESTORE TEMPERATURA: Il buffer per le medie è stato resettato~n"),
       NewState = {Dataslot_1, Dataslot_2, {means, UpdatedMeans}, Dataslot_4, Dataslot_5, _Dataslot_6},
       {ok, NewState};
     _ ->
       UpdatedMeans = lists:append(Means, [{erlang:localtime(), Value}]),
-      %%io:format("Il valore medio ricevuto pari a: ~p gradi~n", [Value]),
+      io:format("GESTORE TEMPERATURA: valore medio ricevuto pari a: ~p gradi~n", [Value]),
       NewState = {Dataslot_1, Dataslot_2, {means, UpdatedMeans}, Dataslot_4, Dataslot_5, _Dataslot_6},
       {ok, NewState}
   end;
@@ -152,12 +152,12 @@ handle_call(ask_for_means, State) ->
   {_Dataslot_1, _Dataslot_2, {means, Means}, _Dataslot_4, _Dataslot_5, _Dataslot_6} = State,
   {ok, Means, State}.
 
-% --- GESTIONE DEI MESSAGGI RIMANENTI --- %
+% --- GESTIONE DEI MESSAGGI --- %
 
 %% Non viene effettuata alcuna particolare gestione di eventuali messaggi non trattati con le funzioni precedenti.
 
 handle_info(Message, State) ->
-  io:format("Messaggio ricevuto: ~p~n", [Message]),
+  io:format("GESTORE TEMPERATURA: Messaggio ricevuto: ~p~n", [Message]),
   {noreply, State}.
 
 

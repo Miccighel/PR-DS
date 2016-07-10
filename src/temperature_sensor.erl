@@ -20,7 +20,7 @@ start_link(EventManager,Name) ->
 init(EventManager) ->
   Interval = 3000,
   process_flag(trap_exit, true),
-  io:format("Sensore per l'invio della temperatura in esecuzione con identificatore: ~p~n", [self()]),
+  io:format("SENSORE TEMPERATURA: Sensore in esecuzione con identificatore: ~p~n", [self()]),
   subscribe(EventManager),
   Data = {intervalBetweenValues,Interval},
   Timer = erlang:send_after(1, self(), {send,EventManager}),
@@ -30,7 +30,7 @@ init(EventManager) ->
 %% Operazioni di deinizializzazione da compiere in caso di terminazione. Per il momento, nessuna.
 
 terminate(Reason, _State) ->
-  io:format("Il sensore per l'invio della temperature con identificatore ~p e stato terminato per il motivo: ~p~n", [self(),Reason]),
+  io:format("SENSORE TEMPERATURA: Il sensore con identificatore ~p e stato terminato per il motivo: ~p~n", [self(),Reason]),
   ok.
 
 %% Gestione della modifica a runtime del codice.
@@ -38,7 +38,7 @@ terminate(Reason, _State) ->
 code_change(_OldVsn, State, _Extra) ->
   {ok, State}.
 
-% --- MESSAGGISTICA --- %
+% --- FUNZIONI DI SUPPORTO ED EVENTUALE MESSAGGISTICA --- %
 
 %% Operazione di registrazione presso l'event handler, che consiste nell'inviare a quest'ultimo il proprio identificatore,
 %% in questo caso il nome.
@@ -62,7 +62,7 @@ send_value(EventManager)->
 %% al componente, infatti, ci si trova in una situazione d'errore.
 
 handle_call(_Request, _From, _State) ->
-  {stop, normal, "Chiamate sincrone non permesse", _State}.
+  {stop, normal, "SENSORE TEMPERATURA: Chiamate sincrone non permesse", _State}.
 
 % --- GESTIONE DELLE CHIAMATE ASINCRONE --- %
 
@@ -76,7 +76,7 @@ handle_cast({update_interval_between_values,Value}, State) ->
   NewState = {Timer, UpdatedData},
   {noreply, NewState}.
 
-% --- GESTIONE DEI MESSAGGI RIMANENTI --- %
+% --- GESTIONE DEI MESSAGGI --- %
 
 %% Nella seguente funzione vengono gestiti i messaggi che non previsti nel pattern matching delle handle_cast e delle
 %% handle_call; in questo caso sono i messaggi legati al timer che il processo invia a se stesso. Quello che viene fatto

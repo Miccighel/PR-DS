@@ -15,7 +15,7 @@
 
 init(ClientName) ->
   process_flag(trap_exit, true),
-  io:format("Gestore di eventi di temperatura in esecuzione con identificatore: ~p~n", [self()]),
+  io:format("GESTORE FINESTRE: Gestore di eventi in esecuzione con identificatore: ~p~n", [self()]),
   Status = dict:new(),
   Sensors = [],
   Data = {{status, Status}, {sensors, Sensors}, {client,ClientName}},
@@ -24,7 +24,7 @@ init(ClientName) ->
 %% Operazioni di deinizializzazione da compiere in caso di terminazione. Per il momento, nessuna.
 
 terminate(Reason, _State) ->
-  io:format("Il gestore di eventi legati alle finestre con identificatore ~p e stato terminato per il motivo: ~p~n", [self(), Reason]),
+  io:format("GESTORE FINESTRE: Il gestore di eventi con identificatore ~p e stato terminato per il motivo: ~p~n", [self(), Reason]),
   ok.
 
 %% Gestione della modifica a runtime del codice.
@@ -42,7 +42,7 @@ handle_event({register, Value}, State) ->
   {_Dataslot_1, Dataslot_2, _Dataslot_3} = State,
   {sensors, Sensors} = Dataslot_2,
   UpdatedSensors = lists:append(Sensors, [{erlang:localtime(), Value}]),
-  io:format("Nuovo sensore registrato presso l'event handler delle finestre con identificatore: ~p~n", [Value]),
+  io:format("GESTORE FINESTRE: Nuovo sensore registrato presso l'event handler delle finestre con identificatore: ~p~n", [Value]),
   NewState = {_Dataslot_1, {sensors, UpdatedSensors}, _Dataslot_3},
   {ok, NewState};
 
@@ -54,8 +54,8 @@ handle_event({send, Value, From}, State) ->
   {Dataslot_1, _Dataslot_2, _Dataslot_3} = State,
   {status, Status} = Dataslot_1,
   UpdatedStatus = dict:store(From, Value, Status),
-  %%io:format("Stato della finestra ricevuto pari a: ~p~n", [Value]),
-  %%io:format("Il valore è stato inviato dal sensore con identificatore: ~p~n", [From]),
+  io:format("GESTORE FINESTRE: Stato ricevuto pari a: ~p~n", [Value]),
+  io:format("GESTORE FINESTRE: Il valore è stato inviato dal sensore con identificatore: ~p~n", [From]),
   NewState = {{status, UpdatedStatus}, _Dataslot_2, _Dataslot_3},
   {ok, NewState}.
 
@@ -81,7 +81,7 @@ handle_call(ask_for_status, State) ->
 %% Non viene effettuata alcuna particolare gestione di eventuali messaggi non trattati con le funzioni precedenti.
 
 handle_info(Message, State) ->
-  io:format("Messaggio ricevuto: ~p~n", [Message]),
+  io:format("GESTORE FINESTRE: Messaggio ricevuto: ~p~n", [Message]),
   {noreply, State}.
 
 

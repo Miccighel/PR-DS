@@ -7,6 +7,8 @@
 -behaviour(application).
 -export([start/2, stop/1]).
 
+%% ---- FUNZIONI STANDARD DI APPLICATION ---- %%
+
 start(normal, _Args) ->
   project_supervisor:start().
 

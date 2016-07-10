@@ -11,7 +11,7 @@
 
 start_link(Name,ClientName) ->
   {ok, Pid} = supervisor:start_link({local,Name},?MODULE, ClientName),
-  io:format("Il supervisore del modulo dedicato alle finestre è stato avviato con identificatore: ~p~n", [Pid]),
+  io:format("SUPERVISORE FINESTRE: Il supervisore è stato avviato con identificatore: ~p~n", [Pid]),
   %% Necessario restituire tale tupla per l'application controller che ha il compito di avviare l'applicazione, altrimenti
   %% restituire un errore bad_return_value.
   {ok, Pid}.
@@ -42,5 +42,5 @@ init(ClientName) ->
 %% Operazioni di deinizializzazione da compiere in caso di terminazione. Per il momento, nessuna.
 
 terminate(Reason, _State) ->
-  io:format("Il supervisore generale delle finestre con identificatore ~p e stato terminato per il motivo: ~p~n", [self(),Reason]),
+  io:format("SUPERVISORE FINESTRE: Il supervisore generale con identificatore ~p e stato terminato per il motivo: ~p~n", [self(),Reason]),
   ok.

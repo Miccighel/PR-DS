@@ -1,4 +1,4 @@
-%% ---- MODULO TEMPERATURE_CALCULATOR --- %%
+%% ---- MODULO TEMPERATURE_CALCULATOR ---- %%
 
 %% Questo modulo modella il componente del sistema atto a svolgere tutti i calcoli necessari sui dati grezzi rilevati dai
 %% sensori.
@@ -20,7 +20,7 @@ start_link(EventManager,Name) ->
 init(EventManager) ->
   Interval = 4000,
   process_flag(trap_exit, true),
-  io:format("Processo dedicato ai calcoli in esecuzione con identificatore: ~p~n", [self()]),
+  io:format("CALCOLATORE TEMPERATURA: Processo in esecuzione con identificatore: ~p~n", [self()]),
   subscribe(EventManager),
   Data = {intervalBetweenMeans,Interval},
   Timer = erlang:send_after(Interval, self(), mean),
@@ -30,7 +30,7 @@ init(EventManager) ->
 %% Operazioni di deinizializzazione da compiere in caso di terminazione. Per il momento, nessuna.
 
 terminate(Reason, _State) ->
-  io:format("Il processo dedicato ai calcoli con identificatore ~p e stato terminato per il motivo: ~p~n", [self(),Reason]),
+  io:format("CALCOLATORE TEMPERATURA: Il processo con identificatore ~p e stato terminato per il motivo: ~p~n", [self(),Reason]),
   ok.
 
 %% Gestione della modifica a runtime del codice.
@@ -38,7 +38,7 @@ terminate(Reason, _State) ->
 code_change(_OldVsn, State, _Extra) ->
   {ok, State}.
 
-% --- MESSAGGISTICA --- %
+% --- FUNZIONI DI SUPPORTO ED EVENTUALE MESSAGGISTICA --- %
 
 %% Operazione di registrazione presso l'event handler, che consiste nell'inviare a quest'ultimo il proprio identificatore,
 %% in questo caso il nome.
@@ -97,13 +97,13 @@ handle_cast({update_interval_between_means,Value}, State) ->
   NewState = {Timer, UpdatedData, EventManager},
   {noreply, NewState}.
 
-% --- GESTIONE DEI MESSAGGI RIMANENTI --- %
+% --- GESTIONE DEI MESSAGGI --- %
 
 %% Nella seguente funzione vengono gestiti i messaggi che non previsti nel pattern matching delle handle_cast e delle
 %% handle_call; in questo caso sono i messaggi legati al timer che il processo invia a se stesso. Quello che viene fatto
 %% consiste nel cancellare il vecchio timer presente nello stato, eseguire la funzione per il calcolo della media, notificare
 %% la media calcolata all'event handler per l'aggiornamento del suo stato  e successivamente ricreare il timer sulla base
-%% dell'intervallo tra ciascun invio definito, aggiornando innfine lo stato del processo.
+%% dell'intervallo tra ciascun invio definito, aggiornando infine lo stato del processo.
 
 handle_info(mean, State) ->
   {OldTimer,Data,EventManager} = State,

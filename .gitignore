@@ -66,3 +66,7 @@ ebin/window_event.beam
 ebin/window_handler.beam
 ebin/window_sensor.beam
 ebin/window_supervisor.beam
+ebin/air_event.beam
+ebin/air_handler.beam
+ebin/air_sensor.beam
+ebin/air_supervisor.beam
