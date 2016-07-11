@@ -9,9 +9,8 @@
 
 % --- FUNZIONI STANDARD DI GEN_EVENT --- %
 
-%% Inizializza lo stato dell'handler, preparando le strutture dati per i valori ricevuti dai sensori, per gli identificatori
-%% dei sensori, e per le medie calcolate dal processo apposito. Viene inoltre definita la dimensione massima della struttura
-%% dati contenente lo storico delle medie stesse. I riferimenti a tali strutture vengono poi salvati nello stato.
+%% Inizializza lo stato dell'handler, preparando la struttura dati per immagazzinare gli identificatori dei sensori.
+%% Tale struttura viene poi salvata nello stato.
 
 init([]) ->
   process_flag(trap_exit, true),
@@ -33,8 +32,6 @@ code_change(_OldVsn, State, _Extra) ->
 
 % --- GESTIONE DEGLI EVENTI --- %
 
-% --- GESTIONE DEGLI EVENTI --- %
-
 %% Gestione di un evento di registrazione di un sensore. Viene prevelata la struttura dati contenente gli identificatori
 %% dei sensori ed essa viene aggiornata inserendo il nuovo identificatore giunto mediante notify. La struttura dati, infine,
 %% viene aggiornata e reinserita nello stato.
@@ -45,6 +42,13 @@ handle_event({register, Value}, State) ->
   io:format("GESTORE CLIMATIZZAZIONE: Nuovo sensore registrato presso l'event handler con identificatore: ~p~n", [Value]),
   NewState = {{sensors, UpdatedSensors}},
   {ok, NewState};
+
+%% Gestione di un evento di ricezione di una coppia media più recente/stato delle finestre inviata dal client in modalità receiver.
+%% Si tratta della funzione finale che conclude un ciclo di business del sistema. Quello che viene svolto consiste nel confrontare
+%% la coppia di valori ottenuta. Il climatizzatore va messo in funzione sono la media è superiore ad una certa costante e se le finestre
+%% (tutte) risultano chiuse. In qualsiasi altro caso, il climatizzatore va spento. Dopo aver eseguito la verifica, vengono prelevati
+%% gli identificatori di ogni sensore e viene inviato un messaggio di accensione o spegnimento, a seconda dell'esito del confronto,
+%% a ciascuno di essi, in quanto ogni sensore rappresenta un modulo presente in una stanza dell'impianto di climatizzazione.
 
 handle_event({check_status, {mean, Value}, {windows, Status}}, State) ->
   {{sensors, Sensors}} = State,
@@ -66,12 +70,10 @@ handle_event({check_status, {mean, Value}, {windows, Status}}, State) ->
   end,
   {ok, State};
 
-handle_event({check_status, {mean, notset}, {windows, notset}}, State) ->
-  io:format("ATTENZIONE: L'applicazione sender non ha ancora inviato dati utili. Verificare l'accensione.~n"),
-  {ok, State}.
+% --- FUNZIONI DI SUPPORTO ED EVENTUALE MESSAGGISTICA --- %
 
 %% Funzione di supporto per l'esplorazione della lista contente tutti i sensori registrati presso l'event handler. Per ogni
-%% sensore contenuto nella lista viene inviato il messaggio d'aggiornamento.
+%% sensore contenuto nella lista viene inviato il messaggio d'accensione o spegnimento, a seconda del caso..
 
 visit_sensor_list([], _Value) -> finished;
 visit_sensor_list([S | C], Value) ->
@@ -81,6 +83,7 @@ visit_sensor_list([S | C], Value) ->
     turn_on -> gen_server:cast(Sensor, {update_status, turn_on});
     turn_off -> gen_server:cast(Sensor, {update_status, turn_off})
   end.
+
 % --- GESTIONE DELLE CHIAMATE SINCRONE --- %
 
 %% Intercetta qualsiasi richiesta sincrona bloccando la chiamata. Se viene eseguita una chiamata sincrona
@@ -89,8 +92,7 @@ visit_sensor_list([S | C], Value) ->
 handle_call(_Request, _State) ->
   {stop, normal, "GESTORE CLIMATIZZAZIONE: Chiamate sincrone non permesse", _State}.
 
-
-% --- GESTIONE DEI MESSAGGI RIMANENTI --- %
+% --- GESTIONE DEI MESSAGGI --- %
 
 %% Non viene effettuata alcuna particolare gestione di eventuali messaggi non trattati con le funzioni precedenti.
 

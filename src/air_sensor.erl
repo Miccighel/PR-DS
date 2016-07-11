@@ -1,4 +1,4 @@
-%% ---- MODULO TEMPERATURE_SENSOR --- %%
+%% ---- MODULO AIR_SENSOR --- %%
 
 %% Questo modulo permette di modellare un singolo sensore in grado azionare la climatizzazione in una stanza.
 
@@ -14,8 +14,8 @@ start_link(EventManager, Name) ->
   {ok, _Pid} = gen_server:start_link({local, Name}, ?MODULE, EventManager, []).
 
 %% Durante la fase di inizializzazione viene eseguita la registrazione del sensore presso l'event handler,
-%% viene preparato lo stato necessario al sensore (l'intervallo con cui inviare i dati all'event handler stesso) ed
-%% il timer per regolare tale invio di dati.
+%% viene preparato lo stato necessario al sensore (ovvero un atomo per rappresentare l'accensione o lo spegnimento
+%% sensore stesso, ovvero del modulo dell'impianto di climatizzazione.
 
 init(EventManager) ->
   process_flag(trap_exit, true),
@@ -35,7 +35,7 @@ terminate(Reason, _State) ->
 code_change(_OldVsn, State, _Extra) ->
   {ok, State}.
 
-% --- MESSAGGISTICA --- %
+% --- FUNZIONI DI SUPPORTO ED EVENTUALE MESSAGGISTICA --- %
 
 %% Operazione di registrazione presso l'event handler, che consiste nell'inviare a quest'ultimo il proprio identificatore,
 %% in questo caso il nome.
@@ -54,8 +54,8 @@ handle_call(_Request, _From, _State) ->
 
 % --- GESTIONE DELLE CHIAMATE ASINCRONE --- %
 
-%% Intercetta qualsiasi richiesta sincrona bloccando la chiamata. Se viene eseguita una chiamata sincrona
-%% al componente, infatti, ci si trova in una situazione d'errore.
+%% La seguente funzione consente di gestire un messaggio generato dall'event handler che permette al sensore di aggiornare il proprio
+%% stato, preparandosi per l'accensione o lo spegnimento definitivo.
 
 handle_cast({update_status, Value}, _State) ->
   case Value of
@@ -71,11 +71,7 @@ handle_cast({update_status, Value}, _State) ->
 
 % --- GESTIONE DEI MESSAGGI RIMANENTI --- %
 
-%% Nella seguente funzione vengono gestiti i messaggi che non previsti nel pattern matching delle handle_cast e delle
-%% handle_call; in questo caso sono i messaggi legati al timer che il processo invia a se stesso. Quello che viene fatto
-%% consiste nel cancellare il vecchio timer presente nello stato, eseguire la funzione per inviare il valore rilevato
-%% all'event handler e ricreare il timer sulla base dell'intervallo tra ciascun invio definito, aggiornando infine lo stato
-%% del processo.
+%% Non viene effettuata alcuna particolare gestione di eventuali messaggi non trattati con le funzioni precedenti.
 
 handle_info(Message, State) ->
   io:format("SENSORE CLIMATIZZAZIONE: Messaggio ricevuto: ~p~n", [Message]),

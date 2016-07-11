@@ -17,8 +17,8 @@ start() ->
   io:format("SUPER SUPERVISORE: L'applicazione è stata avviata in modalità: ~p~n", [Modality]),
   {ok, Pid} = supervisor:start_link({local,super_supervisor},?MODULE, Modality),
   io:format("SUPER SUPERVISORE: Il super supervisore del progetto è stato avviato con identificatore: ~p~n", [Pid]),
-  %% Necessario restituire tale tupla per l'application controller che ha il compito di avviare l'applicazione, altrimenti
-  %% restituire un errore bad_return_value.
+  %% Necessario restituisce tale tupla per l'application controller che ha il compito di avviare l'applicazione, altrimenti
+  %% restituisce un errore bad_return_value.
   {ok, Pid}.
 
 %% Funzione di inizilizzazione che viene lanciata quando l'applicazione viene avviata in modalità sender. Il supervisore, in tale caso,

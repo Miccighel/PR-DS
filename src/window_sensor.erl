@@ -1,6 +1,6 @@
-%% ---- MODULO TEMPERATURE_SENSOR --- %%
+%% ---- MODULO WINDOW_SENSOR --- %%
 
-%% Questo modulo permette di modellare un singolo sensore in grado di rilevare la temperatura in una stanza.
+%% Questo modulo permette di modellare un singolo sensore in grado di rilevare lo stato di una finestra in una stanza.
 
 -module(window_sensor).
 -compile(export_all).
@@ -38,7 +38,7 @@ terminate(Reason, _State) ->
 code_change(_OldVsn, State, _Extra) ->
   {ok, State}.
 
-% --- MESSAGGISTICA --- %
+% --- FUNZIONI DI SUPPORTO ED EVENTUALE MESSAGGISTICA --- %
 
 %% Operazione di registrazione presso l'event handler, che consiste nell'inviare a quest'ultimo il proprio identificatore,
 %% in questo caso il nome.
@@ -47,7 +47,7 @@ subscribe(EventManager)->
   gen_event:notify(EventManager, {register, self()}),
   ok.
 
-%% Invia all'event handler il valore rilevato dal sensore (per il momento è un semplice numero casuale)
+%% Invia all'event handler il valore rilevato dal sensore (ovvero un numero casuale che può essere zero oppure uno).
 
 send_status(EventManager)->
   %% L'istruzione seguente permette di ottenere un seed univoco per generare il numero casuale.
@@ -72,7 +72,7 @@ handle_call(_Request, _From, _State) ->
 handle_cast(_Request, _State) ->
   {stop, normal, "SENSORE FINESTRE: Chiamate asincrone non permesse", _State}.
 
-% --- GESTIONE DEI MESSAGGI RIMANENTI --- %
+% --- GESTIONE DEI MESSAGGI --- %
 
 %% Nella seguente funzione vengono gestiti i messaggi che non previsti nel pattern matching delle handle_cast e delle
 %% handle_call; in questo caso sono i messaggi legati al timer che il processo invia a se stesso. Quello che viene fatto

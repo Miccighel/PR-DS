@@ -10,8 +10,8 @@
 % --- FUNZIONI STANDARD DI GEN_EVENT --- %
 
 %% Inizializza lo stato dell'handler, preparando le strutture dati per i valori ricevuti dai sensori, per gli identificatori
-%% dei sensori, e per le medie calcolate dal processo apposito. Viene inoltre definita la dimensione massima della struttura
-%% dati contenente lo storico delle medie stesse. I riferimenti a tali strutture vengono poi salvati nello stato.
+%% dei sensori, e per le medie calcolate dal processo apposito. Viene inoltre definito il nome del client in modalità sender
+%% a cui inviare i dati su richiesta. I riferimenti a tali strutture vengono poi salvati nello stato.
 
 init(ClientName) ->
   process_flag(trap_exit, true),
@@ -125,6 +125,8 @@ handle_event(erase_old_values, State) ->
   NewTemperature = [],
   NewState = {{temperature, NewTemperature}, Dataslot_2, Dataslot_3, _Dataslot_4, _Dataslot_5, _Dataslot_6},
   {ok, NewState}.
+
+% --- FUNZIONI DI SUPPORTO ED EVENTUALE MESSAGGISTICA --- %
 
 %% Funzione di supporto per l'esplorazione della lista contente tutti i sensori registrati presso l'event handler. Per ogni
 %% sensore contenuto nella lista viene inviato il messaggio d'aggiornamento.

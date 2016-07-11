@@ -13,7 +13,7 @@ start_link(Name) ->
   {ok, Pid} = supervisor:start_link({local,Name},?MODULE, []),
   io:format("SUPERVISORE CLIMATIZZAZIONE: Il supervisore del modulo è stato avviato con identificatore: ~p~n", [Pid]),
   %% Necessario restituire tale tupla per l'application controller che ha il compito di avviare l'applicazione, altrimenti
-  %% restituire un errore bad_return_value.
+  %% restituisce un errore bad_return_value.
   {ok, Pid}.
 
 %% Durante la fase di inizializzazione del supervisore vengono impostati i nomi locali dei processi corrispondenti alle varie
