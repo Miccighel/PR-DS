@@ -60,7 +60,9 @@ handle_event({check_status, {mean, Value}, {windows, Status}}, State) ->
       visit_sensor_list(Sensors, turn_off);
     Value =< 24 andalso Status == all_windows_are_closed ->
       io:format("GESTORE CLIMATIZZAZIONE: La temperatura è inferiore a 24 gradi e le finestre sono chiuse. Si procede con la chiusura del climatizzatore.~n"),
-      visit_sensor_list(Sensors, turn_off)
+      visit_sensor_list(Sensors, turn_off);
+    true ->
+      io:format("GESTORE CLIMATIZZAZIONE: Il sender non è ancora attivo.~n")
   end,
   {ok, State};
 
