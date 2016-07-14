@@ -68,7 +68,7 @@ handle_event({check_status, {mean, Value}, {windows, Status}}, State) ->
     true ->
       io:format("GESTORE CLIMATIZZAZIONE: Il sender non è ancora attivo.~n")
   end,
-  {ok, State};
+  {ok, State}.
 
 % --- FUNZIONI DI SUPPORTO ED EVENTUALE MESSAGGISTICA --- %
 

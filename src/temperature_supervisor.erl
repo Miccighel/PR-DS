@@ -39,7 +39,6 @@ init(ClientName) ->
       {Sensor3Name, {temperature_sensor, start_link, [EventHandlerName,Sensor3Name]}, permanent, 5000, worker, [temperature_sensor]},
       {CalculatorName, {temperature_calculator, start_link, [EventHandlerName,CalculatorName]}, permanent, 5000, worker, [temperature_calculator]},
       {MonitorName, {temperature_network_monitor, start_link, [EventHandlerName,MonitorName]}, permanent, 5000, worker, [temperature_network_monitor]}
-
     ],
   %% Utilizzare una strategia rest_for_one significa che se una componente del sistema termina per qualsiasi motivo, vengono riavviate
   %% LA COMPONENTE STESSA E TUTTE QUELLE AVVIATE DOPO DI ESSA. Se, ad esempio, il processo temperature_sensor_2 muore, vengono fatti ripartire:

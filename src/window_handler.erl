@@ -62,7 +62,16 @@ handle_event({send, Value, From}, State) ->
   io:format("GESTORE FINESTRE: Stato ricevuto pari a: ~p~n", [Value]),
   io:format("GESTORE FINESTRE: Il valore è stato inviato dal sensore con identificatore: ~p~n", [From]),
   NewState = {{status, UpdatedStatus}, _Dataslot_2, _Dataslot_3},
-  {ok, NewState}.
+  {ok, NewState};
+
+%% Gestione di un evento di richiesta dell'intervallo con cui inviare lo stato delle finestre. Si tratta di salvare
+%% nello stato del componente il nuovo intervallo concesso restituire il nuovo stato così ottenuto.
+
+handle_event({update_interval_between_status, Value}, State) ->
+  {_Dataslot_1, Dataslot_2, _Dataslot_3} = State,
+  {sensors, Sensors} = Dataslot_2,
+  visit_sensor_list(Sensors, Value),
+  {ok, State}.
 
 % --- GESTIONE DELLE CHIAMATE SINCRONE --- %
 
@@ -91,5 +100,16 @@ handle_call(ask_for_status, State) ->
 handle_info(Message, State) ->
   io:format("GESTORE FINESTRE: Messaggio ricevuto: ~p~n", [Message]),
   {noreply, State}.
+
+% --- FUNZIONI DI SUPPORTO ED EVENTUALE MESSAGGISTICA --- %
+
+%% Funzione di supporto per l'esplorazione della lista contente tutti i sensori registrati presso l'event handler. Per ogni
+%% sensore contenuto nella lista viene inviato il messaggio d'aggiornamento.
+
+visit_sensor_list([], _Value) -> finished;
+visit_sensor_list([S | C], Value) ->
+  visit_sensor_list(C, Value),
+  {_, Sensor} = S,
+  gen_server:cast(Sensor, {update_interval_between_status, Value}).
 
 

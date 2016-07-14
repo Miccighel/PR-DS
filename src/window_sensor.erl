@@ -66,11 +66,15 @@ handle_call(_Request, _From, _State) ->
 
 % --- GESTIONE DELLE CHIAMATE ASINCRONE --- %
 
-%% Intercetta qualsiasi richiesta sincrona bloccando la chiamata. Se viene eseguita una chiamata sincrona
-%% al componente, infatti, ci si trova in una situazione d'errore.
+%% Il sensore può ricevere una chiamata asincrona dall'event handler per aggiornare l'intervallo di invio dei valori
+%% descriventi lo stato delle finestre. Per fare ciò, viene recuperata ed aggiornata l'apposita componente dello stato
+%% del processo. Lo stato risultante viene, infine, restituito.
 
-handle_cast(_Request, _State) ->
-  {stop, normal, "SENSORE FINESTRE: Chiamate asincrone non permesse", _State}.
+handle_cast({update_interval_between_status,Value}, State) ->
+  {Timer,_} = State,
+  UpdatedData = {intervalBetweenStatus,Value},
+  NewState = {Timer, UpdatedData},
+  {noreply, NewState}.
 
 % --- GESTIONE DEI MESSAGGI --- %
 

@@ -93,11 +93,15 @@ handle_call(_Request, _From, _State) ->
 
 % --- GESTIONE DELLE CHIAMATE ASINCRONE --- %
 
-%% Intercetta qualsiasi richiesta asincrona bloccando la chiamata. Se viene eseguita una chiamata sincrona
-%% al componente, infatti, ci si trova in una situazione d'errore.
+%% Il sensore può ricevere una chiamata asincrona dal monitor di rete per aggiornare l'intervallo di invio dei valori
+%% destinati al modulo di climatizzazione o alla pubblicazione sul broker, a seconda della modalità in cui viene avviato.
+%% Per fare ciò, viene recuperata ed aggiornata l'apposita componente dello stato del processo. Lo stato risultante
+%% viene, infine, restituito.
 
-handle_cast(_Request, _State) ->
-  {stop, normal, "CLIENT DI RETE - GENERALE: Chiamate asincrone non permesse", _State}.
+handle_cast(Value, State) ->
+  Interval = Value,
+  NewState = setelement(2, State, Interval),
+  {noreply, NewState}.
 
 % --- GESTIONE DEI MESSAGGI - GENERALE --- %
 

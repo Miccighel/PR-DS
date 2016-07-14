@@ -27,13 +27,14 @@ init(ClientName) ->
   EventHandlerName = window_event_handler,
   Sensor1Name = window_sensor_1,
   Sensor2Name = window_sensor_2,
+  MonitorName = window_network_monitor,
   %% Una singola ChildSpecification è nella forma: {ChildId, StartFunc, Restart, Shutdown, Type, Modules}.
   ChildSpecification =
     [
       {EventHandlerName, {window_event, start_link, [EventHandlerName,ClientName]}, permanent, 5000, worker, [dynamic]},
       {Sensor1Name, {window_sensor, start_link, [EventHandlerName,Sensor1Name]}, permanent, 5000, worker, [window_sensor]},
-      {Sensor2Name, {window_sensor, start_link, [EventHandlerName,Sensor2Name]}, permanent, 5000, worker, [window_sensor]}
-
+      {Sensor2Name, {window_sensor, start_link, [EventHandlerName,Sensor2Name]}, permanent, 5000, worker, [window_sensor]},
+      {MonitorName, {window_network_monitor, start_link, [EventHandlerName,MonitorName]}, permanent, 5000, worker, [window_network_monitor]}
     ],
   %% Utilizzare una strategia rest_for_one significa che se una componente del sistema termina per qualsiasi motivo, vengono riavviate
   %% LA COMPONENTE STESSA E TUTTE QUELLE AVVIATE DOPO DI ESSA. Se, ad esempio, il processo sensor_2 muore, vengono fatti ripartire:

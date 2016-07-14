@@ -30,12 +30,14 @@ init(sender) ->
   WindowSupervisorName = window_supervisor,
   TemperatureSupervisorName = temperature_supervisor,
   ProcessName = client1,
+  MonitorName = project_network_monitor,
   %% Una singola ChildSpecification è nella forma: {ChildId, StartFunc, Restart, Shutdown, Type, Modules}.
   ChildSpecification =
     [
       {WindowSupervisorName, {window_supervisor, start_link, [WindowSupervisorName,ProcessName]}, permanent, 5000, supervisor, [window_supervisor]},
       {TemperatureSupervisorName, {temperature_supervisor, start_link, [TemperatureSupervisorName,ProcessName]}, permanent, 5000, supervisor, [temperature_supervisor]},
-      {ProcessName, {project_network, start_link, [ProcessName,sender]}, permanent, 5000, worker, [project_network]}
+      {ProcessName, {project_network, start_link, [ProcessName,sender]}, permanent, 5000, worker, [project_network]},
+      {MonitorName, {project_network_monitor, start_link, [ProcessName,MonitorName]}, permanent, 5000, worker, [project_network_monitor]}
     ],
   %% Utilizzare una strategia rest_for_one significa che se una componente del sistema termina per qualsiasi motivo, vengono riavviate
   %% LA COMPONENTE STESSA E TUTTE QUELLE AVVIATE DOPO DI ESSA. Se, ad esempio, il processo window_supervisor muore, vengono fatti ripartire:

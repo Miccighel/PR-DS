@@ -94,9 +94,10 @@ handle_event({mean, Value}, State) ->
       {ok, NewState}
   end;
 
-%% Gestione di un evento di richiesta di modifica nella dimensione del buffer dedicato all'immagazzinamento delle medie
-%% calcolate, originato dal monitor di rete. Si tratta di salvare nello stato del componente la nuova dimensione concessa
-%% per il buffer e restituire il nuovo stato così ottenuto.
+%% Gestione di eventi di richiesta di modifica nella dimensione del buffer dedicato all'immagazzinamento delle medie
+%% calcolate e degli intervalli nell'invio dei dati, originati dal monitor di rete. Si tratta di salvare nello stato
+%% del componente la nuova dimensione concessa per il buffer oppure i nuovi intervalli e restituire il nuovo stato
+%% così ottenuto.
 
 handle_event({update_buffer_size, Value}, State) ->
   {_Dataslot_1, _Dataslot_2, _Dataslot_3, _Dataslot_4, _Dataslot_5, _Dataslot_6} = State,
