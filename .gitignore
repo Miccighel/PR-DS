@@ -70,3 +70,5 @@ ebin/air_event.beam
 ebin/air_handler.beam
 ebin/air_sensor.beam
 ebin/air_supervisor.beam
+ebin/project_network_monitor.beam
+ebin/window_network_monitor.beam
