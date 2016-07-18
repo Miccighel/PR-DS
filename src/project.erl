@@ -9,8 +9,12 @@
 
 %% ---- FUNZIONI STANDARD DI APPLICATION ---- %%
 
+%% Funzione wrapper che consente di avviare concretamente l'applicazione
+
 start(normal, _Args) ->
   project_supervisor:start().
+
+%% Funzione wrapper che consente di interrompere l'esecuzione dell'applicazione
 
 stop(_State) ->
   ok.

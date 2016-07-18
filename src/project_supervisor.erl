@@ -52,11 +52,13 @@ init(receiver) ->
   process_flag(trap_exit, true),
   AirSupervisorName = air_supervisor,
   ProcessName = client1,
+  MonitorName = project_network_monitor,
   %% Una singola ChildSpecification è nella forma: {ChildId, StartFunc, Restart, Shutdown, Type, Modules}.
   ChildSpecification =
     [
       {AirSupervisorName, {air_supervisor, start_link, [AirSupervisorName]}, permanent, 5000, supervisor, [air_supervisor]},
-      {ProcessName, {project_network, start_link, [ProcessName,receiver]}, permanent, 5000, worker, [project_network]}
+      {ProcessName, {project_network, start_link, [ProcessName,receiver]}, permanent, 5000, worker, [project_network]},
+      {MonitorName, {project_network_monitor, start_link, [ProcessName,MonitorName]}, permanent, 5000, worker, [project_network_monitor]}
     ],
   Strategy = {{rest_for_one, 10, 6000}, ChildSpecification},
   {ok, Strategy}.

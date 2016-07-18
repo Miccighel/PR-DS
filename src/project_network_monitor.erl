@@ -1,4 +1,4 @@
-%% ---- MODULO WINDOW_NETWORK_MONITOR ---- %%
+%% ---- MODULO PROJECT_NETWORK_MONITOR ---- %%
 
 %% Questo modulo fornisce un'interfaccia per definire un contratto di QoS verso i sensori, il modulo deputato ai calcoli
 %% e verso l'event handler, al fine di regolare il traffico presente sulla rete, generato per la maggior parte dal modulo
