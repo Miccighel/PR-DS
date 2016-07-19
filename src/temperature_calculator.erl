@@ -18,7 +18,7 @@ start_link(EventManager,Name) ->
 %% le richieste di calcolo della media all'event handler) ed il timer per regolare tale invio di tali richieste.
 
 init(EventManager) ->
-  Interval = 4000,
+  Interval = 5500,
   process_flag(trap_exit, true),
   io:format("CALCOLATORE TEMPERATURA: Processo in esecuzione con identificatore: ~p~n", [self()]),
   subscribe(EventManager),

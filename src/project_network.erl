@@ -70,7 +70,7 @@ code_change(_OldVsn, State, _Extra) ->
 %% come receiver.
 
 interval()->
-  5000.
+  6000.
 
 %% Funzione che definisce l'indirizzo sul quale il broker MQTT è in ascolto.
 

@@ -27,7 +27,6 @@ init(ClientName) ->
   EventHandlerName = temperature_event_handler,
   Sensor1Name = temperature_sensor_1,
   Sensor2Name = temperature_sensor_2,
-  Sensor3Name = temperature_sensor_3,
   CalculatorName = temperature_calculator,
   MonitorName = temperature_network_monitor,
   %% Una singola ChildSpecification è nella forma: {ChildId, StartFunc, Restart, Shutdown, Type, Modules}.
@@ -36,7 +35,6 @@ init(ClientName) ->
       {EventHandlerName, {temperature_event, start_link, [EventHandlerName,ClientName]}, permanent, 5000, worker, [dynamic]},
       {Sensor1Name, {temperature_sensor, start_link, [EventHandlerName,Sensor1Name]}, permanent, 5000, worker, [temperature_sensor]},
       {Sensor2Name, {temperature_sensor, start_link, [EventHandlerName,Sensor2Name]}, permanent, 5000, worker, [temperature_sensor]},
-      {Sensor3Name, {temperature_sensor, start_link, [EventHandlerName,Sensor3Name]}, permanent, 5000, worker, [temperature_sensor]},
       {CalculatorName, {temperature_calculator, start_link, [EventHandlerName,CalculatorName]}, permanent, 5000, worker, [temperature_calculator]},
       {MonitorName, {temperature_network_monitor, start_link, [EventHandlerName,MonitorName]}, permanent, 5000, worker, [temperature_network_monitor]}
     ],

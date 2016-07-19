@@ -18,7 +18,7 @@ start_link(EventManager,Name) ->
 %% il timer per regolare tale invio di dati.
 
 init(EventManager) ->
-  Interval = 3000,
+  Interval = 5000,
   process_flag(trap_exit, true),
   io:format("SENSORE FINESTRE: Sensore in esecuzione con identificatore: ~p~n", [self()]),
   subscribe(EventManager),
