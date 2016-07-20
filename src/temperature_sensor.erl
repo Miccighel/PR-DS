@@ -20,7 +20,10 @@ start_link(EventManager, Name) ->
 init(EventManager) ->
   Interval = 5000,
   process_flag(trap_exit, true),
+  {ok, LogSender} = file:open("../log/Log_Sender.txt", [append]),
+  io:format(LogSender, "~p~p~n", ["SENSORE TEMPERATURA: Sensore in esecuzione con identificatore: ", self()]),
   io:format("SENSORE TEMPERATURA: Sensore in esecuzione con identificatore: ~p~n", [self()]),
+  file:close(LogSender),
   subscribe(EventManager),
   Data = {intervalBetweenValues, Interval},
   Timer = erlang:send_after(1, self(), {send, EventManager}),
@@ -33,7 +36,10 @@ init(EventManager) ->
 %% Operazioni di deinizializzazione da compiere in caso di terminazione. Per il momento, nessuna.
 
 terminate(Reason, _State) ->
+  {ok, LogSender} = file:open("../log/Log_Sender.txt", [append]),
+  io:format(LogSender, "~p~p~p~p~n", ["SENSORE TEMPERATURA: Il sensore con identificatore ", self(), " e stato terminato per il motivo: ", Reason]),
   io:format("SENSORE TEMPERATURA: Il sensore con identificatore ~p e stato terminato per il motivo: ~p~n", [self(), Reason]),
+  file:close(LogSender),
   ok.
 
 %% Gestione della modifica a runtime del codice.
@@ -65,7 +71,7 @@ send_value(EventManager, State) ->
         true ->
           gen_event:notify(EventManager, {send, Degree, self()})
       end;
-    true->
+    true ->
       gen_event:notify(EventManager, {send, Degree, self()})
   end,
   {_Timer, _Data, Degree}.

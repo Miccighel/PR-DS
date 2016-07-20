@@ -20,16 +20,22 @@
 
 init(ClientName) ->
   process_flag(trap_exit, true),
+  {ok, LogSender} = file:open("../log/Log_Sender.txt", [append]),
+  io:format(LogSender, "~p~p~n", ["GESTORE FINESTRE: Gestore di eventi in esecuzione con identificatore: ", self()]),
   io:format("GESTORE FINESTRE: Gestore di eventi in esecuzione con identificatore: ~p~n", [self()]),
+  file:close(LogSender),
   Status = dict:new(),
   Sensors = [],
-  Data = {{status, Status}, {sensors, Sensors}, {client,ClientName}},
+  Data = {{status, Status}, {sensors, Sensors}, {client, ClientName}},
   {ok, Data}.
 
 %% Operazioni di deinizializzazione da compiere in caso di terminazione. Per il momento, nessuna.
 
 terminate(Reason, _State) ->
+  {ok, LogSender} = file:open("../log/Log_Sender.txt", [append]),
+  io:format(LogSender, "~p~p~p~p~n", ["GESTORE FINESTRE: Il gestore di eventi con identificatore ", self(), " e stato terminato per il motivo: ", Reason]),
   io:format("GESTORE FINESTRE: Il gestore di eventi con identificatore ~p e stato terminato per il motivo: ~p~n", [self(), Reason]),
+  file:close(LogSender),
   ok.
 
 %% Gestione della modifica a runtime del codice.
@@ -47,7 +53,10 @@ handle_event({register, Value}, State) ->
   {_Dataslot_1, Dataslot_2, _Dataslot_3} = State,
   {sensors, Sensors} = Dataslot_2,
   UpdatedSensors = lists:append(Sensors, [{erlang:localtime(), Value}]),
+  {ok, LogSender} = file:open("../log/Log_Sender.txt", [append]),
+  io:format(LogSender, "~p~p~n", ["GESTORE FINESTRE: Nuovo sensore registrato presso l'event handler delle finestre con identificatore: ", Value]),
   io:format("GESTORE FINESTRE: Nuovo sensore registrato presso l'event handler delle finestre con identificatore: ~p~n", [Value]),
+  file:close(LogSender),
   NewState = {_Dataslot_1, {sensors, UpdatedSensors}, _Dataslot_3},
   {ok, NewState};
 
@@ -59,8 +68,12 @@ handle_event({send, Value, From}, State) ->
   {Dataslot_1, _Dataslot_2, _Dataslot_3} = State,
   {status, Status} = Dataslot_1,
   UpdatedStatus = dict:store(From, Value, Status),
+  {ok, LogSender} = file:open("../log/Log_Sender.txt", [append]),
+  io:format(LogSender, "~p~p~n", ["GESTORE FINESTRE: Stato ricevuto pari a: ", Value]),
   io:format("GESTORE FINESTRE: Stato ricevuto pari a: ~p~n", [Value]),
+  io:format(LogSender, "~p~p~n", ["GESTORE FINESTRE: Il valore è stato inviato dal sensore con identificatore: ", From]),
   io:format("GESTORE FINESTRE: Il valore è stato inviato dal sensore con identificatore: ~p~n", [From]),
+  file:close(LogSender),
   NewState = {{status, UpdatedStatus}, _Dataslot_2, _Dataslot_3},
   {ok, NewState};
 
@@ -83,14 +96,14 @@ handle_event({update_interval_between_status, Value}, State) ->
 
 handle_call(ask_for_status, State) ->
   {Dataslot_1, _Dataslot_2, _Dataslot_3} = State,
-  {status,Status} = Dataslot_1,
+  {status, Status} = Dataslot_1,
   List = dict:to_list(Status),
-  Sum = lists:foldl(fun({_S,V}, Sum) -> V + Sum end, 0, List),
+  Sum = lists:foldl(fun({_S, V}, Sum) -> V + Sum end, 0, List),
   case Sum of
     N when N == length(List) ->
-      {ok,all_windows_are_closed,State};
+      {ok, all_windows_are_closed, State};
     _ ->
-      {ok,dict:to_list(Status),State}
+      {ok, dict:to_list(Status), State}
   end.
 
 % --- GESTIONE DEI MESSAGGI --- %
@@ -98,7 +111,10 @@ handle_call(ask_for_status, State) ->
 %% Non viene effettuata alcuna particolare gestione di eventuali messaggi non trattati con le funzioni precedenti.
 
 handle_info(Message, State) ->
+  {ok, LogSender} = file:open("../log/Log_Sender.txt", [append]),
+  io:format(LogSender, "~p~p~n", ["GESTORE FINESTRE: Messaggio ricevuto: ", Message]),
   io:format("GESTORE FINESTRE: Messaggio ricevuto: ~p~n", [Message]),
+  file:close(LogSender),
   {noreply, State}.
 
 % --- FUNZIONI DI SUPPORTO ED EVENTUALE MESSAGGISTICA --- %
@@ -111,5 +127,3 @@ visit_sensor_list([S | C], Value) ->
   visit_sensor_list(C, Value),
   {_, Sensor} = S,
   gen_server:cast(Sensor, {update_interval_between_status, Value}).
-
-

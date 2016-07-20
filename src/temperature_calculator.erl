@@ -11,8 +11,8 @@
 
 %% Lancia il componente legandolo all'event handler e registrandolo con il nome desiderato. Tali elementi corrispondono ai parametri passati.
 
-start_link(EventManager,Name) ->
-  {ok, _Pid} = gen_server:start_link({local,Name},?MODULE, EventManager, []).
+start_link(EventManager, Name) ->
+  {ok, _Pid} = gen_server:start_link({local, Name}, ?MODULE, EventManager, []).
 
 %% Durante la fase di inizializzazione viene preparato lo stato necessario al componente (l'intervallo con cui inviare
 %% le richieste di calcolo della media all'event handler) ed il timer per regolare tale invio di tali richieste.
@@ -20,17 +20,23 @@ start_link(EventManager,Name) ->
 init(EventManager) ->
   Interval = 5500,
   process_flag(trap_exit, true),
+  {ok, LogSender} = file:open("../log/Log_Sender.txt", [append]),
+  io:format(LogSender, "~p~p~n", ["CALCOLATORE TEMPERATURA: Processo in esecuzione con identificatore: ", self()]),
   io:format("CALCOLATORE TEMPERATURA: Processo in esecuzione con identificatore: ~p~n", [self()]),
+  file:close(LogSender),
   subscribe(EventManager),
-  Data = {intervalBetweenMeans,Interval},
+  Data = {intervalBetweenMeans, Interval},
   Timer = erlang:send_after(Interval, self(), mean),
-  State = {Timer,Data,EventManager},
+  State = {Timer, Data, EventManager},
   {ok, State}.
 
 %% Operazioni di deinizializzazione da compiere in caso di terminazione. Per il momento, nessuna.
 
 terminate(Reason, _State) ->
-  io:format("CALCOLATORE TEMPERATURA: Il processo con identificatore ~p e stato terminato per il motivo: ~p~n", [self(),Reason]),
+  {ok, LogSender} = file:open("../log/Log_Sender.txt", [append]),
+  io:format(LogSender, "~p~p~p~p~n", ["CALCOLATORE TEMPERATURA: Il processo con identificatore ", self(), " e stato terminato per il motivo: ", Reason]),
+  io:format("CALCOLATORE TEMPERATURA: Il processo con identificatore ~p e stato terminato per il motivo: ~p~n", [self(), Reason]),
+  file:close(LogSender),
   ok.
 
 %% Gestione della modifica a runtime del codice.
@@ -43,7 +49,7 @@ code_change(_OldVsn, State, _Extra) ->
 %% Operazione di registrazione presso l'event handler, che consiste nell'inviare a quest'ultimo il proprio identificatore,
 %% in questo caso il nome.
 
-subscribe(EventManager)->
+subscribe(EventManager) ->
   gen_event:notify(EventManager, {register_calculator, self()}),
   ok.
 
@@ -51,12 +57,12 @@ subscribe(EventManager)->
 %% per mezzo di una funzione ausiliaria ed, una volta fatto ciò, la struttura dati viene trasformata in una lista
 %% dalla quale si ottiene il valore finale di media, che viene restituito.
 
-mean(EventManager)->
+mean(EventManager) ->
   Values = ask_for_values(EventManager),
   case length(Values) of
     N when N > 0 ->
-      AllValues = lists:foldl(fun({_,X}, Sum) -> Sum + X end, 0, Values),
-      Mean = AllValues/length(Values),
+      AllValues = lists:foldl(fun({_, X}, Sum) -> Sum + X end, 0, Values),
+      Mean = AllValues / length(Values),
       Mean;
     _ ->
       Default = 0,
@@ -66,15 +72,15 @@ mean(EventManager)->
 %% Le seguenti funzioni sono funzioni di supporto necessarie per ottenere i dati immagazzinati nello stato dell'event handler
 %% mediante chiamate sincrone.
 
-ask_for_subscribers(EventManager)->
+ask_for_subscribers(EventManager) ->
   Sensors = gen_event:call(EventManager, temperature_handler, ask_for_subscribers),
   Sensors.
 
-ask_for_values(EventManager)->
+ask_for_values(EventManager) ->
   Temperature = gen_event:call(EventManager, temperature_handler, ask_for_values),
   Temperature.
 
-ask_for_means(EventManager)->
+ask_for_means(EventManager) ->
   Means = gen_event:call(EventManager, temperature_handler, ask_for_means),
   Means.
 
@@ -91,9 +97,9 @@ handle_call(_Request, _From, _State) ->
 %% Intercetta una richiesta di modifica dell'intervallo con cui il processo invia richieste di calcolo del valor medio,
 %% prelevato la tupla contenente tale intervallo dallo stato ed aggiornandone il valore.
 
-handle_cast({update_interval_between_means,Value}, State) ->
-  {Timer,_,EventManager} = State,
-  UpdatedData = {intervalBetweenMeans,Value},
+handle_cast({update_interval_between_means, Value}, State) ->
+  {Timer, _, EventManager} = State,
+  UpdatedData = {intervalBetweenMeans, Value},
   NewState = {Timer, UpdatedData, EventManager},
   {noreply, NewState}.
 
@@ -106,12 +112,12 @@ handle_cast({update_interval_between_means,Value}, State) ->
 %% dell'intervallo tra ciascun invio definito, aggiornando infine lo stato del processo.
 
 handle_info(mean, State) ->
-  {OldTimer,Data,EventManager} = State,
-  {intervalBetweenMeans,Interval} = Data,
+  {OldTimer, Data, EventManager} = State,
+  {intervalBetweenMeans, Interval} = Data,
   erlang:cancel_timer(OldTimer),
   Mean = mean(EventManager),
   gen_event:notify(EventManager, {mean, Mean}),
   gen_event:notify(EventManager, erase_old_values),
   Timer = erlang:send_after(Interval, self(), mean),
-  NewState = {Timer,Data,EventManager},
+  NewState = {Timer, Data, EventManager},
   {noreply, NewState}.

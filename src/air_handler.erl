@@ -15,6 +15,9 @@
 init([]) ->
   process_flag(trap_exit, true),
   io:format("GESTORE CLIMATIZZAZIONE: Gestore di eventi in esecuzione con identificatore: ~p~n", [self()]),
+  {ok, LogReceiver} = file:open("../log/Log_Receiver.txt", [append]),
+  io:format(LogReceiver, "~p~p~n", ["GESTORE CLIMATIZZAZIONE: Gestore di eventi in esecuzione con identificatore: ", self()]),
+  file:close(LogReceiver),
   Sensors = [],
   Data = {{sensors, Sensors}},
   {ok, Data}.
@@ -23,6 +26,9 @@ init([]) ->
 
 terminate(Reason, _State) ->
   io:format("GESTORE CLIMATIZZAZIONE: Il gestore di eventi con identificatore ~p e stato terminato per il motivo: ~p~n", [self(), Reason]),
+  {ok, LogReceiver} = file:open("../log/Log_Receiver.txt", [append]),
+  io:format(LogReceiver, "~p~p~p~p~n", ["GESTORE CLIMATIZZAZIONE: Il gestore di eventi con identificatore ", self(), " e stato terminato per il motivo: ", Reason]),
+  file:close(LogReceiver),
   ok.
 
 %% Gestione della modifica a runtime del codice.
@@ -37,9 +43,12 @@ code_change(_OldVsn, State, _Extra) ->
 %% viene aggiornata e reinserita nello stato.
 
 handle_event({register, Value}, State) ->
+  {ok, LogReceiver} = file:open("../log/Log_Receiver.txt", [append]),
   {{sensors, Sensors}} = State,
   UpdatedSensors = lists:append(Sensors, [{erlang:localtime(), Value}]),
   io:format("GESTORE CLIMATIZZAZIONE: Nuovo sensore registrato presso l'event handler con identificatore: ~p~n", [Value]),
+  io:format(LogReceiver, "~p~p~n", ["GESTORE CLIMATIZZAZIONE: Nuovo sensore registrato presso l'event handler con identificatore: ", Value]),
+  file:close(LogReceiver),
   NewState = {{sensors, UpdatedSensors}},
   {ok, NewState};
 
@@ -52,22 +61,29 @@ handle_event({register, Value}, State) ->
 
 handle_event({check_status, {mean, Value}, {windows, Status}}, State) ->
   {{sensors, Sensors}} = State,
+  {ok, LogReceiver} = file:open("../log/Log_Receiver.txt", [append]),
   if
     Value > 24 andalso Status == all_windows_are_closed ->
       io:format("GESTORE CLIMATIZZAZIONE: La temperatura è superiore a 24 gradi e le finestre sono chiuse. Si procede con l'accensione del climatizzatore.~n"),
+      io:format(LogReceiver, "~p~n", ["GESTORE CLIMATIZZAZIONE: La temperatura è superiore a 24 gradi e le finestre sono chiuse. Si procede con l'accensione del climatizzatore."]),
       visit_sensor_list(Sensors, turn_on);
     Value > 24 andalso Status == there_are_open_windows ->
       io:format("GESTORE CLIMATIZZAZIONE: La temperatura è superiore a 24 gradi e le finestre sono aperte. Si procede con la chiusura del climatizzatore.~n"),
+      io:format(LogReceiver, "~p~n", ["GESTORE CLIMATIZZAZIONE: La temperatura è superiore a 24 gradi e le finestre sono aperte. Si procede con la chiusura del climatizzatore."]),
       visit_sensor_list(Sensors, turn_off);
     Value =< 24 andalso Status == there_are_open_windows ->
       io:format("GESTORE CLIMATIZZAZIONE: La temperatura è inferiore a 24 gradi e le finestre sono aperte. Si procede con la chiusura del climatizzatore.~n"),
+      io:format(LogReceiver, "~p~n", ["GESTORE CLIMATIZZAZIONE: La temperatura è inferiore a 24 gradi e le finestre sono aperte. Si procede con la chiusura del climatizzatore."]),
       visit_sensor_list(Sensors, turn_off);
     Value =< 24 andalso Status == all_windows_are_closed ->
       io:format("GESTORE CLIMATIZZAZIONE: La temperatura è inferiore a 24 gradi e le finestre sono chiuse. Si procede con la chiusura del climatizzatore.~n"),
+      io:format(LogReceiver, "~p~n", ["GESTORE CLIMATIZZAZIONE: La temperatura è inferiore a 24 gradi e le finestre sono chiuse. Si procede con la chiusura del climatizzatore."]),
       visit_sensor_list(Sensors, turn_off);
     true ->
-      io:format("GESTORE CLIMATIZZAZIONE: Il sender non è ancora attivo.~n")
+      io:format("GESTORE CLIMATIZZAZIONE: Il sender non è ancora attivo.~n"),
+      io:format(LogReceiver, "~p~n", ["GESTORE CLIMATIZZAZIONE: Il sender non è ancora attivo."])
   end,
+  file:close(LogReceiver),
   {ok, State}.
 
 % --- FUNZIONI DI SUPPORTO ED EVENTUALE MESSAGGISTICA --- %
@@ -98,6 +114,9 @@ handle_call(_Request, _State) ->
 
 handle_info(Message, State) ->
   io:format("GESTORE CLIMATIZZAZIONE: Messaggio ricevuto: ~p~n", [Message]),
+  {ok, LogReceiver} = file:open("../log/Log_Receiver.txt", [append]),
+  io:format(LogReceiver, "~p~p~n", ["GESTORE CLIMATIZZAZIONE: Messaggio ricevuto: ", Message]),
+  file:close(LogReceiver),
   {noreply, State}.
 
 

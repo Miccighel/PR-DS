@@ -10,8 +10,11 @@
 %% Lancia il supervisore e lega l'implementazione concreta dell'event handler al processo gen_event.
 
 start_link(Name) ->
-  {ok, Pid} = supervisor:start_link({local,Name},?MODULE, []),
+  {ok, Pid} = supervisor:start_link({local, Name}, ?MODULE, []),
   io:format("SUPERVISORE CLIMATIZZAZIONE: Il supervisore del modulo è stato avviato con identificatore: ~p~n", [Pid]),
+  {ok, LogReceiver} = file:open("../log/Log_Receiver.txt", [append]),
+  io:format(LogReceiver, "~p~p~n", ["SUPERVISORE CLIMATIZZAZIONE: Il supervisore del modulo è stato avviato con identificatore: ", Pid]),
+  file:close(LogReceiver),
   %% Necessario restituire tale tupla per l'application controller che ha il compito di avviare l'applicazione, altrimenti
   %% restituisce un errore bad_return_value.
   {ok, Pid}.
@@ -29,8 +32,8 @@ init([]) ->
   ChildSpecification =
     [
       {EventHandlerName, {air_event, start_link, [EventHandlerName]}, permanent, 5000, worker, [dynamic]},
-      {Sensor1Name, {air_sensor, start_link, [EventHandlerName,Sensor1Name]}, permanent, 5000, worker, [air_sensor]},
-      {Sensor2Name, {air_sensor, start_link, [EventHandlerName,Sensor2Name]}, permanent, 5000, worker, [air_sensor]}
+      {Sensor1Name, {air_sensor, start_link, [EventHandlerName, Sensor1Name]}, permanent, 5000, worker, [air_sensor]},
+      {Sensor2Name, {air_sensor, start_link, [EventHandlerName, Sensor2Name]}, permanent, 5000, worker, [air_sensor]}
 
     ],
   %% Utilizzare una strategia rest_for_one significa che se una componente del sistema termina per qualsiasi motivo, vengono riavviate
@@ -42,5 +45,8 @@ init([]) ->
 %% Operazioni di deinizializzazione da compiere in caso di terminazione. Per il momento, nessuna.
 
 terminate(Reason, _State) ->
-  io:format("SUPERVISORE CLIMATIZZAZIONE: Il supervisore generale con identificatore ~p e stato terminato per il motivo: ~p~n", [self(),Reason]),
+  io:format("SUPERVISORE CLIMATIZZAZIONE: Il supervisore generale con identificatore ~p e stato terminato per il motivo: ~p~n", [self(), Reason]),
+  {ok, LogReceiver} = file:open("../log/Log_Receiver.txt", [append]),
+  io:format(LogReceiver, "~p~p~p~n", ["SUPERVISORE CLIMATIZZAZIONE: Il supervisore generale con identificatore ~p e stato terminato per il motivo: ", self(), Reason]),
+  file:close(LogReceiver),
   ok.

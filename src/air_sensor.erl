@@ -20,6 +20,9 @@ start_link(EventManager, Name) ->
 init(EventManager) ->
   process_flag(trap_exit, true),
   io:format("SENSORE CLIMATIZZAZIONE: Sensore in esecuzione con identificatore: ~p~n", [self()]),
+  {ok, LogReceiver} = file:open("../log/Log_Receiver.txt", [append]),
+  io:format(LogReceiver, "~p~p~n", ["SENSORE CLIMATIZZAZIONE: Sensore in esecuzione con identificatore: ", self()]),
+  file:close(LogReceiver),
   subscribe(EventManager),
   State = {turn_off},
   {ok, State}.
@@ -28,6 +31,9 @@ init(EventManager) ->
 
 terminate(Reason, _State) ->
   io:format("SENSORE CLIMATIZZAZIONE: Il sensore con identificatore ~p e stato terminato per il motivo: ~p~n", [self(), Reason]),
+  {ok, LogReceiver} = file:open("../log/Log_Receiver.txt", [append]),
+  io:format(LogReceiver, "~p~p~p~p~n", ["SENSORE CLIMATIZZAZIONE: Il sensore con identificatore ", self(), " e stato terminato per il motivo:", Reason]),
+  file:close(LogReceiver),
   ok.
 
 %% Gestione della modifica a runtime del codice.
@@ -61,18 +67,27 @@ handle_cast({update_status, Value}, _State) ->
   case Value of
     turn_on ->
       io:format("SENSORE CLIMATIZZAZIONE: Il climatizzatore gestito da ~p viene acceso.~n", [self()]),
+      {ok, LogReceiver} = file:open("../log/Log_Receiver.txt", [append]),
+      io:format(LogReceiver, "~p~p~p~n", ["SENSORE CLIMATIZZAZIONE: Il climatizzatore gestito da ", self(), " viene acceso"]),
       NewState = {turn_on},
-      {noreply,NewState};
+      file:close(LogReceiver),
+      {noreply, NewState};
     turn_off ->
       io:format("SENSORE CLIMATIZZAZIONE: Il climatizzatore gestito da ~p viene spento.~n", [self()]),
+      {ok, LogReceiver} = file:open("../log/Log_Receiver.txt", [append]),
+      io:format(LogReceiver, "~p~p~p~n", ["SENSORE CLIMATIZZAZIONE: Il climatizzatore gestito da ", self(), " viene spento"]),
       NewState = {turn_off},
-      {noreply,NewState}
+      file:close(LogReceiver),
+      {noreply, NewState}
   end.
-
 % --- GESTIONE DEI MESSAGGI RIMANENTI --- %
 
 %% Non viene effettuata alcuna particolare gestione di eventuali messaggi non trattati con le funzioni precedenti.
 
 handle_info(Message, State) ->
   io:format("SENSORE CLIMATIZZAZIONE: Messaggio ricevuto: ~p~n", [Message]),
+  {ok, LogReceiver} = file:open("../log/Log_Receiver.txt", [append]),
+  io:format(LogReceiver, "~p~p~n", ["SENSORE CLIMATIZZAZIONE: Messaggio ricevuto: ", Message]),
+  file:close(LogReceiver),
   {noreply, State}.
+

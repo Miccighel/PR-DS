@@ -9,6 +9,6 @@
 %% Lancia l'event handler OTP e lo lega all'handler corrispondente.
 
 start_link(Name) ->
-  {ok, Pid} = gen_event:start_link({local,Name}),
+  {ok, Pid} = gen_event:start_link({local, Name}),
   ok = gen_event:add_handler(Name, air_handler, []),
-  {ok,Pid}.
+  {ok, Pid}.

@@ -15,8 +15,14 @@ start() ->
   %% Viene recuperata la variabile d'ambiente che indica la modalità in cui eseguire l'applicazione
   {ok, Modality} = application:get_env(modality),
   io:format("SUPER SUPERVISORE: L'applicazione è stata avviata in modalità: ~p~n", [Modality]),
-  {ok, Pid} = supervisor:start_link({local,super_supervisor},?MODULE, Modality),
+  {ok, LogReceiver} = file:open("../log/Log_Receiver.txt", [append]),
+  io:format(LogReceiver, "~p~p~n", ["SUPER SUPERVISORE: L'applicazione è stata avviata in modalità: ", Modality]),
+  file:close(LogReceiver),
+  {ok, Pid} = supervisor:start_link({local, super_supervisor}, ?MODULE, Modality),
   io:format("SUPER SUPERVISORE: Il super supervisore del progetto è stato avviato con identificatore: ~p~n", [Pid]),
+  {ok, LogSender} = file:open("../log/Log_Sender.txt", [append]),
+  io:format(LogSender, "~p~p~n", ["SUPER SUPERVISORE: L'applicazione è stata avviata in modalità: ", Modality]),
+  file:close(LogSender),
   %% Necessario restituisce tale tupla per l'application controller che ha il compito di avviare l'applicazione, altrimenti
   %% restituisce un errore bad_return_value.
   {ok, Pid}.
@@ -26,6 +32,8 @@ start() ->
 %% sender.
 
 init(sender) ->
+  file:delete("../log/Log_Receiver.txt"),
+  file:delete("../log/Log_Sender.txt"),
   process_flag(trap_exit, true),
   WindowSupervisorName = window_supervisor,
   TemperatureSupervisorName = temperature_supervisor,
@@ -34,10 +42,10 @@ init(sender) ->
   %% Una singola ChildSpecification è nella forma: {ChildId, StartFunc, Restart, Shutdown, Type, Modules}.
   ChildSpecification =
     [
-      {WindowSupervisorName, {window_supervisor, start_link, [WindowSupervisorName,ProcessName]}, permanent, 5000, supervisor, [window_supervisor]},
-      {TemperatureSupervisorName, {temperature_supervisor, start_link, [TemperatureSupervisorName,ProcessName]}, permanent, 5000, supervisor, [temperature_supervisor]},
-      {ProcessName, {project_network, start_link, [ProcessName,sender]}, permanent, 5000, worker, [project_network]},
-      {MonitorName, {project_network_monitor, start_link, [ProcessName,MonitorName]}, permanent, 5000, worker, [project_network_monitor]}
+      {WindowSupervisorName, {window_supervisor, start_link, [WindowSupervisorName, ProcessName]}, permanent, 5000, supervisor, [window_supervisor]},
+      {TemperatureSupervisorName, {temperature_supervisor, start_link, [TemperatureSupervisorName, ProcessName]}, permanent, 5000, supervisor, [temperature_supervisor]},
+      {ProcessName, {project_network, start_link, [ProcessName, sender]}, permanent, 5000, worker, [project_network]},
+      {MonitorName, {project_network_monitor, start_link, [ProcessName, MonitorName]}, permanent, 5000, worker, [project_network_monitor]}
     ],
   %% Utilizzare una strategia rest_for_one significa che se una componente del sistema termina per qualsiasi motivo, vengono riavviate
   %% LA COMPONENTE STESSA E TUTTE QUELLE AVVIATE DOPO DI ESSA. Se, ad esempio, il processo window_supervisor muore, vengono fatti ripartire:
@@ -49,6 +57,8 @@ init(sender) ->
 %% manda in esecuzione il modulo dedicato alla gestione della climatizzazione ed avvia il client di rete in modalità, appunto receiver.
 
 init(receiver) ->
+  file:delete("../log/Log_Receiver.txt"),
+  file:delete("../log/Log_Sender.txt"),
   process_flag(trap_exit, true),
   AirSupervisorName = air_supervisor,
   ProcessName = client1,
@@ -57,8 +67,8 @@ init(receiver) ->
   ChildSpecification =
     [
       {AirSupervisorName, {air_supervisor, start_link, [AirSupervisorName]}, permanent, 5000, supervisor, [air_supervisor]},
-      {ProcessName, {project_network, start_link, [ProcessName,receiver]}, permanent, 5000, worker, [project_network]},
-      {MonitorName, {project_network_monitor, start_link, [ProcessName,MonitorName]}, permanent, 5000, worker, [project_network_monitor]}
+      {ProcessName, {project_network, start_link, [ProcessName, receiver]}, permanent, 5000, worker, [project_network]},
+      {MonitorName, {project_network_monitor, start_link, [ProcessName, MonitorName]}, permanent, 5000, worker, [project_network_monitor]}
     ],
   Strategy = {{rest_for_one, 10, 6000}, ChildSpecification},
   {ok, Strategy}.
@@ -66,5 +76,11 @@ init(receiver) ->
 %% Operazioni di deinizializzazione da compiere in caso di terminazione.
 
 terminate(Reason, _State) ->
-  io:format("SUPER SUPERVISORE: Il supervisore generale del progetto con identificatore ~p e stato terminato per il motivo: ~p~n", [self(),Reason]),
+  io:format("SUPER SUPERVISORE: Il supervisore generale del progetto con identificatore ~p e stato terminato per il motivo: ~p~n", [self(), Reason]),
+  {ok, LogReceiver} = file:open("../log/Log_Receiver.txt", [append]),
+  io:format(LogReceiver, "~p~p~p~p~n", ["SUPER SUPERVISORE: Il supervisore generale del progetto con identificatore ", self(), " e stato terminato per il motivo: ~p~n", Reason]),
+  file:close(LogReceiver),
+  {ok, LogSender} = file:open("../log/Log_Receiver.txt", [append]),
+  io:format(LogSender, "~p~p~p~p~n", ["SUPER SUPERVISORE: Il supervisore generale del progetto con identificatore ", self(), " e stato terminato per il motivo: ~p~n", Reason]),
+  file:close(LogSender),
   ok.

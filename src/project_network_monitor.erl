@@ -12,21 +12,27 @@
 
 %% Lancia il monitor legandolo al client di rete e registrandolo con il nome desiderato. Tali elementi corrispondono ai parametri passati.
 
-start_link(ClientName,Name) ->
-  {ok, _Pid} = gen_server:start_link({local,Name},?MODULE, ClientName,[]).
+start_link(ClientName, Name) ->
+  {ok, _Pid} = gen_server:start_link({local, Name}, ?MODULE, ClientName, []).
 
 %% Durante la fase di inizializzazione viene memorizzato il riferimento all'event handler nello stato del monitor.
 
 init(ClientName) ->
   process_flag(trap_exit, true),
   io:format("MONITOR CLIENT DI RETE: Monitor del traffico di rete generato dal modulo in esecuzione con identificatore: ~p~n", [self()]),
+  {ok, LogReceiver} = file:open("../log/Log_Receiver.txt", [append]),
+  io:format(LogReceiver, "~p~p~n", ["MONITOR CLIENT DI RETE: Monitor del traffico di rete generato dal modulo in esecuzione con identificatore: ", self()]),
+  file:close(LogReceiver),
   State = ClientName,
   {ok, State}.
 
 %% Operazioni di deinizializzazione da compiere in caso di terminazione. Per il momento, nessuna.
 
 terminate(Reason, _State) ->
-  io:format("MONITOR CLIENT DI RETE: Il monitor del traffico di rete generato dal modulo con identificatore ~p e stato terminato per il motivo: ~p~n", [self(),Reason]),
+  io:format("MONITOR CLIENT DI RETE: Il monitor del traffico di rete generato dal modulo con identificatore ~p e stato terminato per il motivo: ~p~n", [self(), Reason]),
+  {ok, LogReceiver} = file:open("../log/Log_Receiver.txt", [append]),
+  io:format(LogReceiver, "~p~p~p~p~n", ["MONITOR CLIENT DI RETE: Il monitor del traffico di rete generato dal modulo con identificatore ", self(), " e stato terminato per il motivo: ", Reason]),
+  file:close(LogReceiver),
   ok.
 
 %% Gestione della modifica a runtime del codice.
@@ -40,7 +46,7 @@ code_change(_OldVsn, State, _Extra) ->
 %% temporale con cui esegue l'invio dei dati sul broker o al modulo dedicato alla climatizzazione, a seconda della modalità in cui
 %% viene avviato.
 
-update_interval(ClientName, Value)->
+update_interval(ClientName, Value) ->
   gen_server:cast(ClientName, Value),
   ok.
 
@@ -66,5 +72,7 @@ handle_cast(_Request, _State) ->
 
 handle_info(Message, State) ->
   io:format("MONITOR FINESTRE: Messaggio ricevuto: ~p~n", [Message]),
-  {noreply, State}.
+  {ok, LogVerbose} = file:open("../log/Log_Receiver.txt", [append]),
+  io:format(LogVerbose, "~p~p~n", ["MONITOR FINESTRE: Messaggio ricevuto: ", Message]),
+  file:close(LogVerbose), {noreply, State}.
 

@@ -4,6 +4,7 @@ CC = erlc
 SRCDIR= src/
 APP= project.app.src
 BEAMDIR=ebin/
+MQTT = ../emqttd/bin/
 
 ## Dipendenze ##
 EMQTTC= deps/emqttc/ebin/*
@@ -13,13 +14,16 @@ GOLDRUSH= deps/goldrush/ebin/*
 LAGER= deps/lager/ebin/*
 
 all:
+	$(MQTT)emqttd start;
+	@$(REBAR) get-deps;
+	@$(REBAR) compile;
 	@cp -r $(EMQTTC) $(BEAMDIR);
 	@cp -r $(GEN_LOGGER) $(BEAMDIR);
 	@cp -r $(GETOPT) $(BEAMDIR);
 	@cp -r $(GOLDRUSH) $(BEAMDIR);
 	@cp -r $(LAGER) $(BEAMDIR);
-	@$(REBAR) get-deps;
-	@$(REBAR) compile;
+	@mkdir -p log;
 	@ erlc -o $(BEAMDIR) $(SRCDIR)/*.erl;
 	$(ERL) -pa $(BEAMDIR) -eval "application:start(project)" 
+	$(MQTT)emqttd stop;
 

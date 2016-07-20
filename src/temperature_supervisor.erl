@@ -11,9 +11,12 @@
 
 %% Lancia il supervisore e lega l'implementazione concreta dell'event handler al processo gen_event.
 
-start_link(Name,ClientName) ->
-  {ok, Pid} = supervisor:start_link({local,Name},?MODULE, ClientName),
+start_link(Name, ClientName) ->
+  {ok, Pid} = supervisor:start_link({local, Name}, ?MODULE, ClientName),
+  {ok, LogSender} = file:open("../log/Log_Sender.txt", [append]),
+  io:format(LogSender, "~p~p~n", ["SUPERVISORE TEMPERATURA: Il supervisore è stato avviato con identificatore: ", Pid]),
   io:format("SUPERVISORE TEMPERATURA: Il supervisore è stato avviato con identificatore: ~p~n", [Pid]),
+  file:close(LogSender),
   %% Necessario restituire tale tupla per l'application controller che ha il compito di avviare l'applicazione, altrimenti
   %% restituisce un errore bad_return_value.
   {ok, Pid}.
@@ -32,11 +35,11 @@ init(ClientName) ->
   %% Una singola ChildSpecification è nella forma: {ChildId, StartFunc, Restart, Shutdown, Type, Modules}.
   ChildSpecification =
     [
-      {EventHandlerName, {temperature_event, start_link, [EventHandlerName,ClientName]}, permanent, 5000, worker, [dynamic]},
-      {Sensor1Name, {temperature_sensor, start_link, [EventHandlerName,Sensor1Name]}, permanent, 5000, worker, [temperature_sensor]},
-      {Sensor2Name, {temperature_sensor, start_link, [EventHandlerName,Sensor2Name]}, permanent, 5000, worker, [temperature_sensor]},
-      {CalculatorName, {temperature_calculator, start_link, [EventHandlerName,CalculatorName]}, permanent, 5000, worker, [temperature_calculator]},
-      {MonitorName, {temperature_network_monitor, start_link, [EventHandlerName,MonitorName]}, permanent, 5000, worker, [temperature_network_monitor]}
+      {EventHandlerName, {temperature_event, start_link, [EventHandlerName, ClientName]}, permanent, 5000, worker, [dynamic]},
+      {Sensor1Name, {temperature_sensor, start_link, [EventHandlerName, Sensor1Name]}, permanent, 5000, worker, [temperature_sensor]},
+      {Sensor2Name, {temperature_sensor, start_link, [EventHandlerName, Sensor2Name]}, permanent, 5000, worker, [temperature_sensor]},
+      {CalculatorName, {temperature_calculator, start_link, [EventHandlerName, CalculatorName]}, permanent, 5000, worker, [temperature_calculator]},
+      {MonitorName, {temperature_network_monitor, start_link, [EventHandlerName, MonitorName]}, permanent, 5000, worker, [temperature_network_monitor]}
     ],
   %% Utilizzare una strategia rest_for_one significa che se una componente del sistema termina per qualsiasi motivo, vengono riavviate
   %% LA COMPONENTE STESSA E TUTTE QUELLE AVVIATE DOPO DI ESSA. Se, ad esempio, il processo temperature_sensor_2 muore, vengono fatti ripartire:
@@ -47,5 +50,8 @@ init(ClientName) ->
 %% Operazioni di deinizializzazione da compiere in caso di terminazione. Per il momento, nessuna.
 
 terminate(Reason, _State) ->
-  io:format("SUPERVISORE TEMPERATURA: Il supervisore generale con identificatore ~p e stato terminato per il motivo: ~p~n", [self(),Reason]),
+  {ok, LogSender} = file:open("../log/Log_Sender.txt", [append]),
+  io:format(LogSender, "~p~p~p~p~n", ["SUPERVISORE TEMPERATURA: Il supervisore generale con identificatore ", self(), " e stato terminato per il motivo: ", Reason]),
+  io:format("SUPERVISORE TEMPERATURA: Il supervisore generale con identificatore ~p e stato terminato per il motivo: ~p~n", [self(), Reason]),
+  file:close(LogSender),
   ok.

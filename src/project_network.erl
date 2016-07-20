@@ -31,6 +31,9 @@ init(sender) ->
   Result = "Client_" ++ lists:flatten(ClientName),
   {ok, Client} = emqttc:start_link([{host, host()}, {client_id, Result}, {logger, info}, {reconnect, {2, 50, 3}}]),
   io:format("CLIENT DI RETE - SENDER: Il client con nome ~p e identificatore ~p è stato lanciato come PUBLISHER per i topic: temperature, window~n", [Result, self()]),
+  {ok, LogSender} = file:open("../log/Log_Sender.txt", [append]),
+  io:format(LogSender, "~p~p~p~p~p~n", ["CLIENT DI RETE - SENDER: Il client con nome ", Result, " e identificatore ", self(), " è stato lanciato come PUBLISHER per i topic: temperature, window"]),
+  file:close(LogSender),
   Timer = erlang:send_after(Interval, self(), ask_for_data),
   State = {#state{mqttc = Client, seq = 1}, Timer, Interval},
   {ok, State};
@@ -48,6 +51,9 @@ init(receiver) ->
   emqttc:subscribe(Client, <<"temperature">>),
   emqttc:subscribe(Client, <<"window">>),
   io:format("CLIENT DI RETE - RECEIVER: Il client con nome ~p e identificatore ~p è stato lanciato come SUBSCRIBER per i topic: temperature, window~n", [Result, self()]),
+  {ok, LogReceiver} = file:open("../log/Log_Receiver.txt", [append]),
+  io:format(LogReceiver, "~p~p~p~p~p~n", ["CLIENT DI RETE - RECEIVER: Il client con nome ", Result, " e identificatore ", self(), " è stato lanciato come SUBSCRIBER per i topic: temperature, window"]),
+  file:close(LogReceiver),
   Timer = erlang:send_after(Interval, self(), load_state),
   State = {#state{mqttc = Client, seq = 1}, Timer, Interval, {mean, notset}, {windows, notset}},
   {ok, State}.
@@ -56,6 +62,12 @@ init(receiver) ->
 
 terminate(Reason, _State) ->
   io:format("CLIENT DI RETE: Il client MQTT con identificatore ~p e stato terminato per il motivo: ~p~n", [self(), Reason]),
+  {ok, LogReceiver} = file:open("../log/Log_Receiver.txt", [append]),
+  io:format(LogReceiver, "~p~p~p~p~n", ["CLIENT DI RETE: Il client MQTT con identificatore ", self(), " e stato terminato per il motivo: ", Reason]),
+  file:close(LogReceiver),
+  {ok, LogSender} = file:open("../log/Log_Sender.txt", [append]),
+  io:format(LogSender, "~p~p~p~p~n", ["CLIENT DI RETE: Il client MQTT con identificatore ", self(), " e stato terminato per il motivo: ", Reason]),
+  file:close(LogSender),
   ok.
 
 %% Gestione della modifica a runtime del codice.
@@ -69,7 +81,7 @@ code_change(_OldVsn, State, _Extra) ->
 %% viene avviato in modalità sender e ed entro cui inviare i dati al modulo della climatizzazione quando il client viene avviato
 %% come receiver.
 
-interval()->
+interval() ->
   6000.
 
 %% Funzione che definisce l'indirizzo sul quale il broker MQTT è in ascolto.
@@ -80,7 +92,7 @@ host() ->
 %% Funzione che viene utilizzata per inviare all'event handler la coppia media/stato delle fineste ottenuta attaverso il broker MQTT
 %% quando il client viene avviato in modalità receiver.
 
-send_data(Mean,Windows) ->
+send_data(Mean, Windows) ->
   gen_event:notify(air_event_handler, {check_status, Mean, Windows}).
 
 % --- GESTIONE DELLE CHIAMATE SINCRONE --- %
@@ -109,13 +121,24 @@ handle_cast(Value, State) ->
 
 handle_info({mqttc, Client, connected}, State) ->
   io:format("CLIENT DI RETE - GENERALE: Il client MQTT con identificatore ~p è connesso al broker~n", [Client]),
+  {ok, LogReceiver} = file:open("../log/Log_Receiver.txt", [append]),
+  io:format(LogReceiver, "~p~p~p~n", ["CLIENT DI RETE - GENERALE: Il client MQTT con identificatore ", Client, " è connesso al broker"]),
+  file:close(LogReceiver),
+  {ok, LogSender} = file:open("../log/Log_Sender.txt", [append]),
+  io:format(LogSender, "~p~p~p~n", ["CLIENT DI RETE - GENERALE: Il client MQTT con identificatore ", Client, " è connesso al broker"]),
+  file:close(LogSender),
   {noreply, State};
 
 %% Funzione che stampa un messaggio di conferma quando la disconnessione dal broker avviene con successo.
 
 handle_info({mqttc, Client, disconnected}, State) ->
   io:format("CLIENT DI RETE - GENERALE: Il client MQTT con identificatore ~p non è più connesso al broker~n", [Client]),
-  {noreply, State};
+  {ok, LogReceiver} = file:open("../log/Log_Receiver.txt", [append]),
+  io:format(LogReceiver, "~p~p~p~n", ["CLIENT DI RETE - GENERALE: Il client MQTT con identificatore ", Client, " non è più connesso al broker"]),
+  file:close(LogReceiver),
+  {ok, LogSender} = file:open("../log/Log_Sender.txt", [append]),
+  io:format(LogSender, "~p~p~p~n", ["CLIENT DI RETE - GENERALE: Il client MQTT con identificatore ", Client, " non è più connesso al broker"]),
+  file:close(LogSender), {noreply, State};
 
 % --- GESTIONE DEI MESSAGGI - SENDER --- %
 
@@ -158,6 +181,9 @@ handle_info({publish, <<"temperature">>, Value}, State) ->
   %% Il valore ricevuto viene convertito nella rappresentazione come intero
   [ParsedValue] = (binary_to_list(Value)),
   io:format("CLIENT DI RETE - RECEIVER: Messaggio ricevuto per il topic ~s: ~p~n", [temperature, ParsedValue]),
+  {ok, LogReceiver} = file:open("../log/Log_Receiver.txt", [append]),
+  io:format(LogReceiver, "~p~s~p~p~n", ["CLIENT DI RETE - RECEIVER: Messaggio ricevuto per il topic ", temperature, " : ", ParsedValue]),
+  file:close(LogReceiver),
   {Info, _Timer, _Interval, _Mean, Status} = State,
   %% Il valore viene memorizzto nella componente apposita dello stato.
   NewMean = {mean, ParsedValue},
@@ -175,10 +201,13 @@ handle_info({publish, <<"window">>, Value}, State) ->
     <<"all_windows_are_closed">> -> ParsedValue = all_windows_are_closed
   end,
   io:format("CLIENT DI RETE - RECEIVER: Messaggio ricevuto per il topic ~s: ~p~n", [window, ParsedValue]),
+  {ok, LogReceiver} = file:open("../log/Log_Receiver.txt", [append]),
+  io:format(LogReceiver, "~p~s~p~p~n", ["CLIENT DI RETE - RECEIVER: Messaggio ricevuto per il topic ", window, " : ", ParsedValue]),
+  file:close(LogReceiver),
   {_Info, _Timer, _Interval, _Mean, _Windows} = State,
   %% Il valore viene memorizzto nella componente apposita dello stato.
   NewWindows = {windows, ParsedValue},
-  NewState = {_Info, _Timer, _Interval,  _Mean, NewWindows},
+  NewState = {_Info, _Timer, _Interval, _Mean, NewWindows},
   {noreply, NewState};
 
 %% Funzione che gestisce il caricamento delle coppie {media più recente / stato delle fineste più recente} nel modulo dedicato
@@ -188,7 +217,7 @@ handle_info(load_state, State) ->
   {Info, OldTimer, Interval, Mean, Windows} = State,
   erlang:cancel_timer(OldTimer),
   %% Si sfrutta l'apposita funzione di supporto per inviare il messaggio
-  send_data(Mean,Windows),
+  send_data(Mean, Windows),
   Timer = erlang:send_after(Interval, self(), load_state),
   NewState = {Info, Timer, Interval, Mean, Windows},
   {noreply, NewState}.

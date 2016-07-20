@@ -15,17 +15,23 @@
 
 init(ClientName) ->
   process_flag(trap_exit, true),
+  {ok, LogSender} = file:open("../log/Log_Sender.txt", [append]),
+  io:format(LogSender, "~p~p~n", ["GESTORE TEMPERATURA: Gestore di eventi in esecuzione con identificatore: ", self()]),
   io:format("GESTORE TEMPERATURA: Gestore di eventi in esecuzione con identificatore: ~p~n", [self()]),
+  file:close(LogSender),
   Temperature = [],
   Sensors = [],
   Means = [],
-  Data = {{temperature, Temperature}, {sensors, Sensors}, {means, Means}, {bufferSize, 3000}, {calculator, notset}, {client,ClientName}},
+  Data = {{temperature, Temperature}, {sensors, Sensors}, {means, Means}, {bufferSize, 3000}, {calculator, notset}, {client, ClientName}},
   {ok, Data}.
 
 %% Operazioni di deinizializzazione da compiere in caso di terminazione. Per il momento, nessuna.
 
 terminate(Reason, _State) ->
+  {ok, LogSender} = file:open("../log/Log_Sender.txt", [append]),
+  io:format(LogSender, "~p~p~p~p~n", ["GESTORE TEMPERATURA: Il gestore di eventi con identificatore", self(), " è stato terminato per il motivo: ", Reason]),
   io:format("GESTORE TEMPERATURA: Il gestore di eventi con identificatore ~p e stato terminato per il motivo: ~p~n", [self(), Reason]),
+  file:close(LogSender),
   ok.
 
 %% Gestione della modifica a runtime del codice.
@@ -43,7 +49,10 @@ handle_event({register, Value}, State) ->
   {_Dataslot_1, Dataslot_2, _Dataslot_3, _Dataslot_4, _Dataslot_5, _Dataslot_6} = State,
   {sensors, Sensors} = Dataslot_2,
   UpdatedSensors = lists:append(Sensors, [{erlang:localtime(), Value}]),
+  {ok, LogSender} = file:open("../log/Log_Sender.txt", [append]),
+  io:format(LogSender, "~p~p~n", ["GESTORE TEMPERATURA: Nuovo sensore registrato presso l'event handler con identificatore: ", Value]),
   io:format("GESTORE TEMPERATURA: Nuovo sensore registrato presso l'event handler con identificatore: ~p~n", [Value]),
+  file:close(LogSender),
   NewState = {_Dataslot_1, {sensors, UpdatedSensors}, _Dataslot_3, _Dataslot_4, _Dataslot_5, _Dataslot_6},
   {ok, NewState};
 
@@ -55,7 +64,10 @@ handle_event({register_calculator, Value}, State) ->
   {_Dataslot_1, _Dataslot_2, _Dataslot_3, _Dataslot_4, Dataslot_5, _Dataslot_6} = State,
   {calculator, _} = Dataslot_5,
   UpdatedCalculator = {calculator, Value},
+  {ok, LogSender} = file:open("../log/Log_Sender.txt", [append]),
+  io:format(LogSender, "~p~p~n", ["GESTORE TEMPERATURA: Nuovo processo dedicato ai calcoli registrato presso l'event handler con identificatore: ", Value]),
   io:format("GESTORE TEMPERATURA: Nuovo processo dedicato ai calcoli registrato presso l'event handler con identificatore: ~p~n", [Value]),
+  file:close(LogSender),
   NewState = {_Dataslot_1, _Dataslot_2, _Dataslot_3, _Dataslot_4, UpdatedCalculator, _Dataslot_6},
   {ok, NewState};
 
@@ -67,8 +79,12 @@ handle_event({send, Value, From}, State) ->
   {Dataslot_1, _Dataslot_2, _Dataslot_3, _Dataslot_4, _Dataslot_5, _Dataslot_6} = State,
   {temperature, Temperature} = Dataslot_1,
   UpdatedTemperature = lists:append(Temperature, [{erlang:localtime(), Value}]),
+  {ok, LogSender} = file:open("../log/Log_Sender.txt", [append]),
+  io:format(LogSender, "~p~p~p~n", ["GESTORE TEMPERATURA: Valore ricevuto pari a: ", Value, " gradi"]),
   io:format("GESTORE TEMPERATURA: Valore ricevuto pari a: ~p gradi~n", [Value]),
+  io:format(LogSender, "~p~p~n", ["GESTORE TEMPERATURA: Il valore è stato inviato dal sensore con identificatore: ", From]),
   io:format("GESTORE TEMPERATURA: Il valore è stato inviato dal sensore con identificatore: ~p~n", [From]),
+  file:close(LogSender),
   NewState = {{temperature, UpdatedTemperature}, _Dataslot_2, _Dataslot_3, _Dataslot_4, _Dataslot_5, _Dataslot_6},
   {ok, NewState};
 
@@ -84,12 +100,18 @@ handle_event({mean, Value}, State) ->
   case length(Means) of
     N when N > BufferSize ->
       UpdatedMeans = [],
+      {ok, LogSender} = file:open("../log/Log_Sender.txt", [append]),
+      io:format(LogSender, "~p~n", ["GESTORE TEMPERATURA: Il buffer per le medie è stato resettato"]),
       io:format("GESTORE TEMPERATURA: Il buffer per le medie è stato resettato~n"),
+      file:close(LogSender),
       NewState = {Dataslot_1, Dataslot_2, {means, UpdatedMeans}, Dataslot_4, Dataslot_5, _Dataslot_6},
       {ok, NewState};
     _ ->
       UpdatedMeans = lists:append(Means, [{erlang:localtime(), Value}]),
+      {ok, LogSender} = file:open("../log/Log_Sender.txt", [append]),
+      io:format(LogSender, "~p~p~p~n", ["GESTORE TEMPERATURA: valore medio ricevuto pari a:", Value, "gradi"]),
       io:format("GESTORE TEMPERATURA: valore medio ricevuto pari a: ~p gradi~n", [Value]),
+      file:close(LogSender),
       NewState = {Dataslot_1, Dataslot_2, {means, UpdatedMeans}, Dataslot_4, Dataslot_5, _Dataslot_6},
       {ok, NewState}
   end;
@@ -160,7 +182,10 @@ handle_call(ask_for_means, State) ->
 %% Non viene effettuata alcuna particolare gestione di eventuali messaggi non trattati con le funzioni precedenti.
 
 handle_info(Message, State) ->
+  {ok, LogSender} = file:open("../log/Log_Sender.txt", [append]),
+  io:format(LogSender, "~p~p~n", ["GESTORE TEMPERATURA: Messaggio ricevuto: ", Message]),
   io:format("GESTORE TEMPERATURA: Messaggio ricevuto: ~p~n", [Message]),
+  file:close(LogSender),
   {noreply, State}.
 
 
