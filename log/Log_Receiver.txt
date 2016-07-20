@@ -1,3 +1,0 @@
-"MONITOR CLIENT DI RETE: Monitor del traffico di rete generato dal modulo in esecuzione con identificatore: "<0.74.0>
-"CLIENT DI RETE - GENERALE: Il client MQTT con identificatore "<0.72.0>" è connesso al broker"
-"MONITOR CLIENT DI RETE: Il monitor del traffico di rete generato dal modulo con identificatore "<0.74.0>" e stato terminato per il motivo: "shutdown

@@ -14,16 +14,16 @@ GOLDRUSH= deps/goldrush/ebin/*
 LAGER= deps/lager/ebin/*
 
 all:
-	$(MQTT)emqttd start;
-	@$(REBAR) get-deps;
-	@$(REBAR) compile;
-	@cp -r $(EMQTTC) $(BEAMDIR);
+	$(MQTT)emqttd start; ##avvia MQTT
+	@$(REBAR) get-deps; ##richiede le dipendenze presenti nel file rebar.config##
+	@$(REBAR) compile; ##compila i file sorgenti##
+	@cp -r $(EMQTTC) $(BEAMDIR); ##copia tutte le dipendenze## 
 	@cp -r $(GEN_LOGGER) $(BEAMDIR);
 	@cp -r $(GETOPT) $(BEAMDIR);
 	@cp -r $(GOLDRUSH) $(BEAMDIR);
 	@cp -r $(LAGER) $(BEAMDIR);
-	@mkdir -p log;
-	@ erlc -o $(BEAMDIR) $(SRCDIR)/*.erl;
-	$(ERL) -pa $(BEAMDIR) -eval "application:start(project)" 
-	$(MQTT)emqttd stop;
+	@mkdir -p log; ##crea la cartella log##
+	@ erlc -o $(BEAMDIR) $(SRCDIR)/*.erl; ##compila i file .erl##
+	$(ERL) -pa $(BEAMDIR) -eval "application:start(project)" ##avvia l'applicazione##
+	$(MQTT)emqttd stop; #interrompe MQTT
 

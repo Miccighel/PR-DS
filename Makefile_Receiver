@@ -5,7 +5,7 @@ SRCDIR= src/
 APP= project.app.src
 BEAMDIR=ebin/
 
-## Dipendenze ##
+## Cartelle Dipendenze ##
 EMQTTC= deps/emqttc/ebin/*
 GEN_LOGGER= deps/gen_logger/ebin/*
 GETOPT= deps/getopt/ebin/*
@@ -13,14 +13,14 @@ GOLDRUSH= deps/goldrush/ebin/*
 LAGER= deps/lager/ebin/*
 
 all:
-	@$(REBAR) get-deps;
-	@$(REBAR) compile;
-	@cp -r $(EMQTTC) $(BEAMDIR);
+	@$(REBAR) get-deps; ##richiede le dipendenze presenti nel file rebar.config##
+	@$(REBAR) compile; ##compila i file sorgenti##
+	@cp -r $(EMQTTC) $(BEAMDIR); ##copia tutte le dipendenze## 
 	@cp -r $(GEN_LOGGER) $(BEAMDIR);
 	@cp -r $(GETOPT) $(BEAMDIR);
 	@cp -r $(GOLDRUSH) $(BEAMDIR);
 	@cp -r $(LAGER) $(BEAMDIR);
-	@mkdir -p log;
-	@ erlc -o $(BEAMDIR) $(SRCDIR)/*.erl;
-	$(ERL) -pa $(BEAMDIR) -eval "application:start(project)" 
+	@mkdir -p log; ##crea la cartella log##
+	@ erlc -o $(BEAMDIR) $(SRCDIR)/*.erl; ##compila i file .erl##
+	$(ERL) -pa $(BEAMDIR) -eval "application:start(project)" ##avvia l'applicazione##
 

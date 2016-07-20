@@ -21,6 +21,6 @@
   {registered, [project]},
   {mod, {project, []}},
   {env, [
-    {modality, sender}
+    {modality, receiver}
   ]}
 ]}.

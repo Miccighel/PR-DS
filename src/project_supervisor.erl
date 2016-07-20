@@ -59,6 +59,7 @@ init(sender) ->
 init(receiver) ->
   file:delete("../log/Log_Receiver.txt"),
   file:delete("../log/Log_Sender.txt"),
+  file:delete("../log/Plot_Data.csv"),
   process_flag(trap_exit, true),
   AirSupervisorName = air_supervisor,
   ProcessName = client1,

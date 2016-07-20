@@ -18,6 +18,9 @@ init([]) ->
   {ok, LogReceiver} = file:open("../log/Log_Receiver.txt", [append]),
   io:format(LogReceiver, "~p~p~n", ["GESTORE CLIMATIZZAZIONE: Gestore di eventi in esecuzione con identificatore: ", self()]),
   file:close(LogReceiver),
+  {ok, PlotData} = file:open("../log/Plot_Data.csv", [append]),
+  io:format(PlotData, "~p~n", ["temperature,window,air"]),
+  file:close(PlotData),
   Sensors = [],
   Data = {{sensors, Sensors}},
   {ok, Data}.
@@ -62,27 +65,33 @@ handle_event({register, Value}, State) ->
 handle_event({check_status, {mean, Value}, {windows, Status}}, State) ->
   {{sensors, Sensors}} = State,
   {ok, LogReceiver} = file:open("../log/Log_Receiver.txt", [append]),
+  {ok, PlotData} = file:open("../log/Plot_Data.csv", [append]),
   if
     Value > 24 andalso Status == all_windows_are_closed ->
       io:format("GESTORE CLIMATIZZAZIONE: La temperatura è superiore a 24 gradi e le finestre sono chiuse. Si procede con l'accensione del climatizzatore.~n"),
       io:format(LogReceiver, "~p~n", ["GESTORE CLIMATIZZAZIONE: La temperatura è superiore a 24 gradi e le finestre sono chiuse. Si procede con l'accensione del climatizzatore."]),
+      io:format(PlotData, "~p~p~p~p~p~n", [Value,",",1,",",1]),
       visit_sensor_list(Sensors, turn_on);
     Value > 24 andalso Status == there_are_open_windows ->
       io:format("GESTORE CLIMATIZZAZIONE: La temperatura è superiore a 24 gradi e le finestre sono aperte. Si procede con la chiusura del climatizzatore.~n"),
       io:format(LogReceiver, "~p~n", ["GESTORE CLIMATIZZAZIONE: La temperatura è superiore a 24 gradi e le finestre sono aperte. Si procede con la chiusura del climatizzatore."]),
+      io:format(PlotData, "~p~p~p~p~p~n", [Value,",",0,",",0]),
       visit_sensor_list(Sensors, turn_off);
     Value =< 24 andalso Status == there_are_open_windows ->
-      io:format("GESTORE CLIMATIZZAZIONE: La temperatura è inferiore a 24 gradi e le finestre sono aperte. Si procede con la chiusura del climatizzatore.~n"),
+      io:format("GESTORE CLIMATIZZAZIONE: La temperatura è inferiore o uguale a 24 gradi e le finestre sono aperte. Si procede con la chiusura del climatizzatore.~n"),
       io:format(LogReceiver, "~p~n", ["GESTORE CLIMATIZZAZIONE: La temperatura è inferiore a 24 gradi e le finestre sono aperte. Si procede con la chiusura del climatizzatore."]),
+      io:format(PlotData, "~p~p~p~p~p~n", [Value,",",0,",",0]),
       visit_sensor_list(Sensors, turn_off);
     Value =< 24 andalso Status == all_windows_are_closed ->
-      io:format("GESTORE CLIMATIZZAZIONE: La temperatura è inferiore a 24 gradi e le finestre sono chiuse. Si procede con la chiusura del climatizzatore.~n"),
+      io:format("GESTORE CLIMATIZZAZIONE: La temperatura è inferiore o uguale a 24 gradi e le finestre sono chiuse. Si procede con la chiusura del climatizzatore.~n"),
       io:format(LogReceiver, "~p~n", ["GESTORE CLIMATIZZAZIONE: La temperatura è inferiore a 24 gradi e le finestre sono chiuse. Si procede con la chiusura del climatizzatore."]),
+      io:format(PlotData, "~p~p~p~p~p~n", [Value,",",1,",",0]),
       visit_sensor_list(Sensors, turn_off);
     true ->
       io:format("GESTORE CLIMATIZZAZIONE: Il sender non è ancora attivo.~n"),
       io:format(LogReceiver, "~p~n", ["GESTORE CLIMATIZZAZIONE: Il sender non è ancora attivo."])
   end,
+  file:close(PlotData),
   file:close(LogReceiver),
   {ok, State}.
 
