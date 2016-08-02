@@ -62,7 +62,7 @@ subscribe(EventManager) ->
 
 send_value(EventManager, State) ->
   {_Timer, _Data, LastValue} = State,
-  Degree = normal(24, 4),
+  Degree = normal(26, 4),
   if
     Degree > 24 ->
       if

@@ -1,24 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="f8986394-cde2-4d40-97ea-ae082117e451" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Makefile_Sender" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/air_handler.erl" afterPath="$PROJECT_DIR$/src/air_handler.erl" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/air_sensor.erl" afterPath="$PROJECT_DIR$/src/air_sensor.erl" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/air_supervisor.erl" afterPath="$PROJECT_DIR$/src/air_supervisor.erl" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/project_network.erl" afterPath="$PROJECT_DIR$/src/project_network.erl" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/project_network_monitor.erl" afterPath="$PROJECT_DIR$/src/project_network_monitor.erl" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/project_supervisor.erl" afterPath="$PROJECT_DIR$/src/project_supervisor.erl" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/temperature_calculator.erl" afterPath="$PROJECT_DIR$/src/temperature_calculator.erl" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/temperature_handler.erl" afterPath="$PROJECT_DIR$/src/temperature_handler.erl" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/temperature_network_monitor.erl" afterPath="$PROJECT_DIR$/src/temperature_network_monitor.erl" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/temperature_sensor.erl" afterPath="$PROJECT_DIR$/src/temperature_sensor.erl" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/temperature_supervisor.erl" afterPath="$PROJECT_DIR$/src/temperature_supervisor.erl" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/window_handler.erl" afterPath="$PROJECT_DIR$/src/window_handler.erl" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/window_network_monitor.erl" afterPath="$PROJECT_DIR$/src/window_network_monitor.erl" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/window_sensor.erl" afterPath="$PROJECT_DIR$/src/window_sensor.erl" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/window_supervisor.erl" afterPath="$PROJECT_DIR$/src/window_supervisor.erl" />
-    </list>
+    <list default="true" id="f8986394-cde2-4d40-97ea-ae082117e451" name="Default" comment="" />
     <ignored path="Progetto - Sistemi Distribuiti.iws" />
     <ignored path=".idea/workspace.xml" />
     <ignored path="$PROJECT_DIR$/out/" />
@@ -52,28 +35,28 @@
       <file leaf-file-name="window_sensor.erl" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/window_sensor.erl">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-370">
+            <state relative-caret-position="525">
               <caret line="35" column="31" selection-start-line="35" selection-start-column="31" selection-end-line="35" selection-end-column="31" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="project.app.src" pinned="false" current-in-tab="true">
+      <file leaf-file-name="project.app.src" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/project.app.src">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="225">
-              <caret line="15" column="15" selection-start-line="15" selection-start-column="15" selection-end-line="15" selection-end-column="15" />
+            <state relative-caret-position="345">
+              <caret line="23" column="21" selection-start-line="23" selection-start-column="21" selection-end-line="23" selection-end-column="21" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="temperature_supervisor.erl" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/temperature_supervisor.erl">
+      <file leaf-file-name="air_handler.erl" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/air_handler.erl">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="530">
-              <caret line="52" column="31" selection-start-line="52" selection-start-column="31" selection-end-line="52" selection-end-column="31" />
+            <state relative-caret-position="1245">
+              <caret line="83" column="14" selection-start-line="83" selection-start-column="14" selection-end-line="83" selection-end-column="14" />
               <folding />
             </state>
           </provider>
@@ -89,16 +72,6 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="temperature_handler.erl" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/temperature_handler.erl">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="485">
-              <caret line="184" column="31" selection-start-line="184" selection-start-column="31" selection-end-line="184" selection-end-column="31" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="window_event.erl" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/window_event.erl">
           <provider selected="true" editor-type-id="text-editor">
@@ -109,41 +82,51 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="window_handler.erl" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/window_handler.erl">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="365">
-              <caret line="113" column="31" selection-start-line="113" selection-start-column="31" selection-end-line="113" selection-end-column="31" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="window_network_monitor.erl" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/window_network_monitor.erl">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="500">
+            <state relative-caret-position="1095">
               <caret line="73" column="31" selection-start-line="73" selection-start-column="31" selection-end-line="73" selection-end-column="31" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="temperature_network_monitor.erl" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/temperature_network_monitor.erl">
+      <file leaf-file-name="temperature_sensor.erl" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/temperature_sensor.erl">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="555">
-              <caret line="83" column="31" selection-start-line="83" selection-start-column="31" selection-end-line="83" selection-end-column="31" />
+            <state relative-caret-position="195">
+              <caret line="58" column="0" selection-start-line="58" selection-start-column="0" selection-end-line="59" selection-end-column="0" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="temperature_sensor.erl" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/temperature_sensor.erl">
+      <file leaf-file-name="air_sensor.erl" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/air_sensor.erl">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="570">
-              <caret line="38" column="31" selection-start-line="38" selection-start-column="31" selection-end-line="38" selection-end-column="31" />
+            <state relative-caret-position="515">
+              <caret line="88" column="33" selection-start-line="88" selection-start-column="33" selection-end-line="88" selection-end-column="33" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="air_supervisor.erl" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/air_supervisor.erl">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="35">
+              <caret line="14" column="33" selection-start-line="14" selection-start-column="33" selection-end-line="14" selection-end-column="33" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="project.erl" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/project.erl">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="300">
+              <caret line="20" column="0" selection-start-line="20" selection-start-column="0" selection-end-line="20" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -160,7 +143,7 @@
     </option>
   </component>
   <component name="Git.Settings">
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
   <component name="GradleLocalSettings">
     <option name="externalProjectsViewState">
@@ -168,25 +151,25 @@
     </option>
   </component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="file://$PROJECT_DIR$/src/temperature_calculator.erl" root0="SKIP_INSPECTION" />
-    <setting file="file://$PROJECT_DIR$/src/temperature_network_monitor.erl" root0="SKIP_INSPECTION" />
-    <setting file="file://$PROJECT_DIR$/src/temperature_event.erl" root0="SKIP_INSPECTION" />
-    <setting file="file://$PROJECT_DIR$/src/window_network_monitor.erl" root0="SKIP_INSPECTION" />
-    <setting file="file://$PROJECT_DIR$/src/project_network.erl" root0="SKIP_INSPECTION" />
-    <setting file="file://$PROJECT_DIR$/src/window_event.erl" root0="SKIP_INSPECTION" />
-    <setting file="file://$PROJECT_DIR$/src/project_network_monitor.erl" root0="SKIP_INSPECTION" />
-    <setting file="file://$PROJECT_DIR$/src/air_event.erl" root0="SKIP_INSPECTION" />
-    <setting file="file://$PROJECT_DIR$/src/air_handler.erl" root0="SKIP_INSPECTION" />
-    <setting file="file://$PROJECT_DIR$/src/air_sensor.erl" root0="SKIP_INSPECTION" />
-    <setting file="file://$PROJECT_DIR$/src/project.erl" root0="SKIP_INSPECTION" />
-    <setting file="file://$PROJECT_DIR$/src/air_supervisor.erl" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/project_supervisor.erl" root0="SKIP_INSPECTION" />
-    <setting file="file://$PROJECT_DIR$/src/temperature_handler.erl" root0="SKIP_INSPECTION" />
-    <setting file="file://$PROJECT_DIR$/src/temperature_supervisor.erl" root0="SKIP_INSPECTION" />
-    <setting file="file://$PROJECT_DIR$/src/window_handler.erl" root0="SKIP_INSPECTION" />
-    <setting file="file://$PROJECT_DIR$/src/window_sensor.erl" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/project_network_monitor.erl" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/project_network.erl" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/air_supervisor.erl" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/air_sensor.erl" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/air_handler.erl" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/air_event.erl" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/window_event.erl" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/temperature_event.erl" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/project.erl" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/window_supervisor.erl" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/window_sensor.erl" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/window_network_monitor.erl" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/window_handler.erl" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/temperature_supervisor.erl" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/temperature_sensor.erl" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/temperature_network_monitor.erl" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/temperature_handler.erl" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/temperature_calculator.erl" root0="SKIP_INSPECTION" />
   </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
@@ -219,7 +202,6 @@
         <option value="$PROJECT_DIR$/src/air_event.erl" />
         <option value="$PROJECT_DIR$/src/temperature_event.erl" />
         <option value="$PROJECT_DIR$/src/window_event.erl" />
-        <option value="$PROJECT_DIR$/src/project.app.src" />
         <option value="$PROJECT_DIR$/src/air_handler.erl" />
         <option value="$PROJECT_DIR$/src/air_sensor.erl" />
         <option value="$PROJECT_DIR$/src/air_supervisor.erl" />
@@ -229,12 +211,13 @@
         <option value="$PROJECT_DIR$/src/temperature_calculator.erl" />
         <option value="$PROJECT_DIR$/src/temperature_handler.erl" />
         <option value="$PROJECT_DIR$/src/temperature_network_monitor.erl" />
-        <option value="$PROJECT_DIR$/src/temperature_sensor.erl" />
         <option value="$PROJECT_DIR$/src/temperature_supervisor.erl" />
         <option value="$PROJECT_DIR$/src/window_handler.erl" />
         <option value="$PROJECT_DIR$/src/window_network_monitor.erl" />
         <option value="$PROJECT_DIR$/src/window_sensor.erl" />
         <option value="$PROJECT_DIR$/src/window_supervisor.erl" />
+        <option value="$PROJECT_DIR$/src/temperature_sensor.erl" />
+        <option value="$PROJECT_DIR$/src/project.app.src" />
       </list>
     </option>
   </component>
@@ -301,7 +284,7 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="Progetto" />
+              <option name="myItemId" value="Source" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -311,18 +294,32 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="Progetto" />
+              <option name="myItemId" value="Source" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
+              <option name="myItemId" value="ebin" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Progetto - Sistemi Distribuiti" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Source" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="deps" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
         </subPane>
       </pane>
-      <pane id="PackagesPane" />
       <pane id="Scratches" />
+      <pane id="PackagesPane" />
       <pane id="Scope" />
     </panes>
   </component>
@@ -330,9 +327,9 @@
     <property name="aspect.path.notification.shown" value="true" />
     <property name="WebServerToolWindowFactoryState" value="true" />
     <property name="js-jscs-nodeInterpreter" value="/usr/local/bin/node" />
-    <property name="settings.editor.selected.configurable" value="reference.settingsdialog.IDE.editor.colors.Erlang" />
+    <property name="settings.editor.selected.configurable" value="project.propVCSSupport.Mappings" />
     <property name="settings.editor.splitter.proportion" value="0.2" />
-    <property name="project.structure.last.edited" value="Project" />
+    <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.4597701" />
     <property name="GenerateAntBuildDialog.enableUiFormCompile" value="true" />
@@ -703,18 +700,6 @@
       <envs />
       <method />
     </configuration>
-    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType" factoryName="Kotlin script">
-      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
-      <option name="filePath" />
-      <option name="vmParameters" />
-      <option name="alternativeJrePath" />
-      <option name="programParameters" />
-      <option name="passParentEnvs" value="true" />
-      <option name="workingDirectory" />
-      <option name="isAlternativeJrePathEnabled" value="false" />
-      <envs />
-      <method />
-    </configuration>
     <configuration default="true" type="RebarEunitRunConfigurationType" factoryName="Erlang Rebar Eunit" show_console_on_std_err="false" show_console_on_std_out="false">
       <option name="command" value="eunit" />
       <option name="skipDependencies" value="true" />
@@ -874,42 +859,44 @@
       <workItem from="1468935010476" duration="6674000" />
       <workItem from="1469006844799" duration="8723000" />
       <workItem from="1469027302902" duration="1154000" />
+      <workItem from="1469093340199" duration="348000" />
+      <workItem from="1470150136666" duration="132000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="214085000" />
+    <option name="totallyTimeSpent" value="214565000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1440" height="826" extended-state="0" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.23163842" sideWeight="0.472103" order="13" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.50141245" sideWeight="0.54005724" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3297568" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32909605" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2457627" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.5" sideWeight="0.4599428" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Remote Host" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.1981402" sideWeight="0.48870057" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.18025751" sideWeight="0.490113" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.18025751" sideWeight="0.47457626" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3297568" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.18025751" sideWeight="0.509887" order="4" side_tool="true" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.18025751" sideWeight="0.5254237" order="4" side_tool="true" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24964234" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3997175" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="3" side_tool="false" content_ui="combo" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3997175" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.23163842" sideWeight="0.472103" order="13" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2457627" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Gradle Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="11" side_tool="true" content_ui="tabs" />
       <window_info id="Memory Monitor" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="12" side_tool="true" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32909605" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -1064,13 +1051,7 @@
     <entry file="file://$PROJECT_DIR$/src/my_event_guard.erl" />
     <entry file="file://$PROJECT_DIR$/src/my_event_guard_sup.erl" />
     <entry file="file://$PROJECT_DIR$/src/sockserv_serv.erl" />
-    <entry file="file://$PROJECT_DIR$/ebin/emqttc.app">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/ebin/emqttc.app" />
     <entry file="file://$PROJECT_DIR$/Emakefile" />
     <entry file="file://$PROJECT_DIR$/ebin/project.app" />
     <entry file="file://$PROJECT_DIR$/ebin/.placeholder">
@@ -1117,13 +1098,7 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/gaussian_generator.erl" />
-    <entry file="file://$PROJECT_DIR$/.gitignore">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/.gitignore" />
     <entry file="file:///opt/local/lib/erlang/lib/stdlib-2.8/src/io.erl">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="226">
@@ -1135,39 +1110,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="210">
           <caret line="14" column="0" selection-start-line="14" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/air_handler.erl">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="510">
-          <caret line="125" column="33" selection-start-line="125" selection-start-column="33" selection-end-line="125" selection-end-column="33" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/air_sensor.erl">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="515">
-          <caret line="88" column="33" selection-start-line="88" selection-start-column="33" selection-end-line="88" selection-end-column="33" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/air_supervisor.erl">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="35">
-          <caret line="14" column="33" selection-start-line="14" selection-start-column="33" selection-end-line="14" selection-end-column="33" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/project.erl">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="300">
-          <caret line="20" column="0" selection-start-line="20" selection-start-column="0" selection-end-line="20" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1207,13 +1149,12 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="120">
           <caret line="8" column="3" selection-start-line="0" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/temperature_handler.erl">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="485">
+        <state relative-caret-position="2760">
           <caret line="184" column="31" selection-start-line="184" selection-start-column="31" selection-end-line="184" selection-end-column="31" />
           <folding />
         </state>
@@ -1221,39 +1162,23 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/temperature_network_monitor.erl">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="555">
+        <state relative-caret-position="1245">
           <caret line="83" column="31" selection-start-line="83" selection-start-column="31" selection-end-line="83" selection-end-column="31" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/temperature_sensor.erl">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="570">
-          <caret line="38" column="31" selection-start-line="38" selection-start-column="31" selection-end-line="38" selection-end-column="31" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/temperature_supervisor.erl">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="530">
+        <state relative-caret-position="780">
           <caret line="52" column="31" selection-start-line="52" selection-start-column="31" selection-end-line="52" selection-end-column="31" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/window_event.erl">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="210">
-          <caret line="14" column="0" selection-start-line="14" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/window_handler.erl">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="365">
+        <state relative-caret-position="1695">
           <caret line="113" column="31" selection-start-line="113" selection-start-column="31" selection-end-line="113" selection-end-column="31" />
           <folding />
         </state>
@@ -1261,7 +1186,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/window_network_monitor.erl">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="500">
+        <state relative-caret-position="1095">
           <caret line="73" column="31" selection-start-line="73" selection-start-column="31" selection-end-line="73" selection-end-column="31" />
           <folding />
         </state>
@@ -1269,7 +1194,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/window_sensor.erl">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-370">
+        <state relative-caret-position="525">
           <caret line="35" column="31" selection-start-line="35" selection-start-column="31" selection-end-line="35" selection-end-column="31" />
           <folding />
         </state>
@@ -1283,10 +1208,58 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/air_handler.erl">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1245">
+          <caret line="83" column="14" selection-start-line="83" selection-start-column="14" selection-end-line="83" selection-end-column="14" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/project.erl">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="300">
+          <caret line="20" column="0" selection-start-line="20" selection-start-column="0" selection-end-line="20" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/project.app.src">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="225">
-          <caret line="15" column="15" selection-start-line="15" selection-start-column="15" selection-end-line="15" selection-end-column="15" />
+        <state relative-caret-position="345">
+          <caret line="23" column="21" selection-start-line="23" selection-start-column="21" selection-end-line="23" selection-end-column="21" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/air_sensor.erl">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="515">
+          <caret line="88" column="33" selection-start-line="88" selection-start-column="33" selection-end-line="88" selection-end-column="33" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/air_supervisor.erl">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="35">
+          <caret line="14" column="33" selection-start-line="14" selection-start-column="33" selection-end-line="14" selection-end-column="33" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/window_event.erl">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="210">
+          <caret line="14" column="0" selection-start-line="14" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/temperature_sensor.erl">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="195">
+          <caret line="58" column="0" selection-start-line="58" selection-start-column="0" selection-end-line="59" selection-end-column="0" />
           <folding />
         </state>
       </provider>
